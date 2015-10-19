@@ -11,7 +11,9 @@ public class MainServiceImpl implements MainService {
 	
 	private String insertSQLStatement = "";
 	private String insertPreparedStatement = "";
+	private String resultSetStatement = "";
 	private static final String PREPARED_STATEMENT_VARIABLE = "pstm";
+	private static final String RESULT_SET_VARIABLE = "resultSet";
 
 	public <T> String getInsertSQLStatement(Class<T> klazz, String tableName) {
 		Field[] fields = klazz.getDeclaredFields();
@@ -44,12 +46,37 @@ public class MainServiceImpl implements MainService {
 		}
 		return insertPreparedStatement;
 	}
+	
+
+	@Override
+	public <T> String getResultSetStatement(Class<T> klazz) {
+		for (Field field : klazz.getDeclaredFields()) {
+			TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType().getSimpleName());
+			appendResultSetStatement("%s.set%s(%s", klazz, field);
+			appendResultSetStatement(".get%s(\"%s\"))", typeEnum, field);
+		}
+		
+		return resultSetStatement;
+	}
 
 	private void appendInsertPreparedStatement(String string, int index, TypeEnum typeEnum) {
 		insertPreparedStatement += String.format(string, 
 				PREPARED_STATEMENT_VARIABLE,
 				typeEnum.getValue(),
 				index);
+	}
+	
+	private <T> void appendResultSetStatement(String string, Class<T> klazz, Field field) {
+		resultSetStatement += String.format(string, 
+				StringUtils.uncapitalize(klazz.getSimpleName()),
+				StringUtils.capitalize(field.getName()),
+				RESULT_SET_VARIABLE);
+	}
+	
+	private <T> void appendResultSetStatement(String string, TypeEnum typeEnum, Field field) {
+		resultSetStatement += String.format(string + ";\n", 
+				StringUtils.capitalize(typeEnum.getValue()),
+			    field.getName()); 
 	}
 
 	private <T> void appendInsertPreparedStatement(String string, Class<T> klazz, Field field) {

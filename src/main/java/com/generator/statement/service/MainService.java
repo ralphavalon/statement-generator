@@ -6,4 +6,6 @@ public interface MainService {
 	
 	<T> String getPreparedStatement(Class<T> klazz);
 
+	<T> String getResultSetStatement(Class<T> klazz);
+
 }

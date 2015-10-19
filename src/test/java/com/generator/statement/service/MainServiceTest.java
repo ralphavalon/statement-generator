@@ -18,6 +18,17 @@ public class MainServiceTest {
 			+ "pstm.setFloat(6, exampleModel.getFloatValue());\n"
 			+ "pstm.setDouble(7, exampleModel.getDoubleValue());\n"
 			+ "pstm.setObject(8, exampleModel.getExampleObject());\n";
+
+	private String resultSetString = ""
+			+ "exampleModel.setIntValue(resultSet.getInt(\"intValue\"));\n"
+			+ "exampleModel.setStringValue(resultSet.getString(\"stringValue\"));\n"
+			+ "exampleModel.setDateValue(resultSet.getDate(\"dateValue\"));\n"
+			+ "exampleModel.setBooleanValue(resultSet.getBoolean(\"booleanValue\"));\n"
+			+ "exampleModel.setLongValue(resultSet.getLong(\"longValue\"));\n"
+			+ "exampleModel.setFloatValue(resultSet.getFloat(\"floatValue\"));\n"
+			+ "exampleModel.setDoubleValue(resultSet.getDouble(\"doubleValue\"));\n"
+			+ "exampleModel.setExampleObject(resultSet.getObject(\"exampleObject\"));\n";
+
 	private String insertSQLStatementString = "INSERT INTO tableName(intValue,stringValue,dateValue,booleanValue,longValue,floatValue,doubleValue,exampleObject) VALUES (?,?,?,?,?,?,?,?);";
 
 	@Test
@@ -28,7 +39,12 @@ public class MainServiceTest {
 	@Test
 	public void testSuccessGetInsertSQLStatement() {
 		assertEquals(insertSQLStatementString, mainService.getInsertSQLStatement(ExampleModel.class,
-																				"tableName"));
+						"tableName"));
+	}
+	
+	@Test
+	public void testSuccessGetResultSetStatement() {
+		assertEquals(resultSetString, mainService.getResultSetStatement(ExampleModel.class));
 	}
 
 }

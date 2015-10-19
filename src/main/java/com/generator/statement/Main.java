@@ -10,6 +10,7 @@ public class Main {
 		MainService mainService = new MainServiceImpl();
 		print(mainService.getInsertSQLStatement(ExampleModel.class, "tableName"));
 		print(mainService.getPreparedStatement(ExampleModel.class));
+		print(mainService.getResultSetStatement(ExampleModel.class));
 	}
 	
 	static void print(String string) {
