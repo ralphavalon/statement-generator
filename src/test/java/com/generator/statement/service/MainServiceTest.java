@@ -29,7 +29,7 @@ public class MainServiceTest {
 			+ "exampleModel.setDoubleValue(resultSet.getDouble(\"doubleValue\"));\n"
 			+ "exampleModel.setExampleObject(resultSet.getObject(\"exampleObject\"));\n";
 
-	private String insertSQLStatementString = "INSERT INTO tableName(intValue,stringValue,dateValue,booleanValue,longValue,floatValue,doubleValue,exampleObject) VALUES (?,?,?,?,?,?,?,?);";
+	private String insertSQLStatementString = "INSERT INTO tableName(intValue,stringValue,dateValue,booleanValue,longValue,floatValue,doubleValue,exampleObject) VALUES (?,?,?,?,?,?,?,?);\n";
 
 	@Test
 	public void testSuccessGetPreparedStatement() {
@@ -38,8 +38,7 @@ public class MainServiceTest {
 
 	@Test
 	public void testSuccessGetInsertSQLStatement() {
-		assertEquals(insertSQLStatementString, mainService.getInsertSQLStatement(ExampleModel.class,
-						"tableName"));
+		assertEquals(insertSQLStatementString, mainService.getInsertSQLStatement(ExampleModel.class));
 	}
 	
 	@Test

@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import org.apache.commons.lang3.StringUtils;
 
 import com.generator.statement.TypeEnum;
+import com.generator.statement.util.PropertyReader;
 import com.generator.statement.util.Util;
 
 public class MainServiceImpl implements MainService {
@@ -12,17 +13,18 @@ public class MainServiceImpl implements MainService {
 	private String insertSQLStatement = "";
 	private String insertPreparedStatement = "";
 	private String resultSetStatement = "";
-	private static final String PREPARED_STATEMENT_VARIABLE = "pstm";
-	private static final String RESULT_SET_VARIABLE = "resultSet";
+	private static final String PREPARED_STATEMENT_VARIABLE = PropertyReader.getProperty("prepared_statement");
+	private static final String RESULT_SET_VARIABLE = PropertyReader.getProperty("result_set");
+	private static final String TABLE_NAME = PropertyReader.getProperty("table_name");
 
-	public <T> String getInsertSQLStatement(Class<T> klazz, String tableName) {
+	public <T> String getInsertSQLStatement(Class<T> klazz) {
 		Field[] fields = klazz.getDeclaredFields();
-		insertSQLStatement += "INSERT INTO " + tableName + "(";
+		insertSQLStatement += "INSERT INTO " + TABLE_NAME + "(";
 		for (Field field : fields) {
 			insertSQLStatement += field.getName() + ",";
 		}
 		insertSQLStatement = Util.removeLastComma(insertSQLStatement);
-		insertSQLStatement += String.format(") VALUES (%s);", Util.removeLastComma(StringUtils.repeat("?,", fields.length)));
+		insertSQLStatement += String.format(") VALUES (%s);\n", Util.removeLastComma(StringUtils.repeat("?,", fields.length)));
 		return insertSQLStatement;
 	}
 	
