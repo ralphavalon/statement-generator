@@ -1,5 +1,6 @@
 package com.generator.statement.util;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,11 +21,17 @@ public class Util {
 	}
 	
 	public static Set<Statements> getStatements() {
-		String[] statementsString = PropertyReader.getProperty("statements").replace(" ", "").split(",");
-		for(String statementString : statementsString) {
+		for(String statementString : removeUselessData(PropertyReader.getProperty("statements"))) {
 			statementsSet.add(Statements.getByName(statementString));
 		}
 		statementsSet.removeAll(Collections.singleton(null));
 		return statementsSet;
 	}
+	
+	public static Set<String> removeUselessData(String string) {
+		Set<String> usefulData = new HashSet<String>(Arrays.asList(string.replace(" ", "").split(",")));
+		usefulData.removeAll(Collections.singleton(null));
+		return usefulData;
+	}
+	
 }

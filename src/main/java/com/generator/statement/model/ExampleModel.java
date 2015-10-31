@@ -6,6 +6,8 @@ public class ExampleModel {
 	
 	private int intValue;
 	private String stringValue;
+	private String stringToIgnore;
+	private Date dateToIgnore;
 	private Date dateValue;
 	private boolean booleanValue;
 	private Long longValue;
@@ -13,6 +15,18 @@ public class ExampleModel {
 	private Double doubleValue;
 	private ExampleObject exampleObject;
 	
+	public String getStringToIgnore() {
+		return stringToIgnore;
+	}
+	public void setStringToIgnore(String stringToIgnore) {
+		this.stringToIgnore = stringToIgnore;
+	}
+	public Date getDateToIgnore() {
+		return dateToIgnore;
+	}
+	public void setDateToIgnore(Date dateToIgnore) {
+		this.dateToIgnore = dateToIgnore;
+	}
 	public Double getDoubleValue() {
 		return doubleValue;
 	}

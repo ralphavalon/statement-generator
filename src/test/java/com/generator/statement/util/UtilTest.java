@@ -25,5 +25,13 @@ public class UtilTest {
 		assertTrue(statements.contains(Statements.PSTM));
 		assertTrue(statements.contains(Statements.RESULTSET));
 	}
+	
+	@Test
+	public void testSuccessRemoveUselessData() {
+		Set<String> usefulData = Util.removeUselessData(PropertyReader.getProperty("ignore_fields"));
+		assertEquals(2, usefulData.size());
+		assertTrue(usefulData.contains("stringToIgnore"));
+		assertTrue(usefulData.contains("dateToIgnore"));
+	}
 
 }

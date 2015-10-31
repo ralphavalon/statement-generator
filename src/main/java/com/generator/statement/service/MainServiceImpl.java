@@ -1,6 +1,7 @@
 package com.generator.statement.service;
 
 import java.lang.reflect.Field;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,34 +17,44 @@ public class MainServiceImpl implements MainService {
 	private static final String PREPARED_STATEMENT_VARIABLE = PropertyReader.getProperty("prepared_statement");
 	private static final String RESULT_SET_VARIABLE = PropertyReader.getProperty("result_set");
 	private static final String TABLE_NAME = PropertyReader.getProperty("table_name");
+	private static final String FIELDS_TO_IGNORE = PropertyReader.getProperty("ignore_fields");
+	private static Set<String> toIgnoreSet;
+	
+	public MainServiceImpl() {
+		toIgnoreSet = Util.removeUselessData(FIELDS_TO_IGNORE);
+	}
 
 	public <T> String getInsertSQLStatement(Class<T> klazz) {
 		Field[] fields = klazz.getDeclaredFields();
 		insertSQLStatement += "INSERT INTO " + TABLE_NAME + "(";
 		for (Field field : fields) {
-			insertSQLStatement += field.getName() + ",";
+			if(!isIgnored(field)) {
+				insertSQLStatement += field.getName() + ",";
+			}
 		}
 		insertSQLStatement = Util.removeLastComma(insertSQLStatement);
-		insertSQLStatement += String.format(") VALUES (%s);\n", Util.removeLastComma(StringUtils.repeat("?,", fields.length)));
+		insertSQLStatement += String.format(") VALUES (%s);\n", Util.removeLastComma(StringUtils.repeat("?,", fieldsToUse(fields))));
 		return insertSQLStatement;
 	}
-	
+
 	public <T> String getPreparedStatement(Class<T> klazz) {
 		int i = 0;
 		for (Field field : klazz.getDeclaredFields()) {
-			TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType().getSimpleName());
-			appendInsertPreparedStatement("%s.set%s(%d, ", ++i, typeEnum);
-			
-			switch (typeEnum) {
-			case DATE:
-				appendInsertPreparedStatement("new Date(%s.get%s().getTime()))", klazz, field);
-				break;
-			case BOOLEAN:
-				appendInsertPreparedStatement("%s.is%s())", klazz, field);
-				break;
-			default:
-				appendInsertPreparedStatement("%s.get%s())", klazz, field);
-				break;
+			if(!isIgnored(field)) {
+				TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType().getSimpleName());
+				appendInsertPreparedStatement("%s.set%s(%d, ", ++i, typeEnum);
+				
+				switch (typeEnum) {
+				case DATE:
+					appendInsertPreparedStatement("new Date(%s.get%s().getTime()))", klazz, field);
+					break;
+				case BOOLEAN:
+					appendInsertPreparedStatement("%s.is%s())", klazz, field);
+					break;
+				default:
+					appendInsertPreparedStatement("%s.get%s())", klazz, field);
+					break;
+				}
 			}
 		}
 		return insertPreparedStatement;
@@ -53,9 +64,11 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public <T> String getResultSetStatement(Class<T> klazz) {
 		for (Field field : klazz.getDeclaredFields()) {
-			TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType().getSimpleName());
-			appendResultSetStatement("%s.set%s(%s", klazz, field);
-			appendResultSetStatement(".get%s(\"%s\"))", typeEnum, field);
+			if(!isIgnored(field)) {
+				TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType().getSimpleName());
+				appendResultSetStatement("%s.set%s(%s", klazz, field);
+				appendResultSetStatement(".get%s(\"%s\"))", typeEnum, field);
+			}
 		}
 		
 		return resultSetStatement;
@@ -85,6 +98,14 @@ public class MainServiceImpl implements MainService {
 		insertPreparedStatement += String.format(string + ";\n", 
 			     StringUtils.uncapitalize(klazz.getSimpleName()), 
 			     StringUtils.capitalize(field.getName()));
+	}
+	
+	private boolean isIgnored(Field field) {
+		return toIgnoreSet.contains(field.getName());
+	}
+	
+	private int fieldsToUse(Field[] fields) {
+		return fields.length - toIgnoreSet.size();
 	}
 	
 }
