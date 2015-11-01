@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import com.generator.statement.config.SqlsEnum;
 import com.generator.statement.config.StatementsEnum;
 
 public class UtilTest {
@@ -32,6 +33,13 @@ public class UtilTest {
 		assertEquals(2, usefulData.size());
 		assertTrue(usefulData.contains("stringToIgnore"));
 		assertTrue(usefulData.contains("dateToIgnore"));
+	}
+	
+	@Test
+	public void testSuccessGetSqls() {
+		Set<SqlsEnum> sqlsSet = Util.getSqls();
+		assertEquals(1, sqlsSet.size());
+		assertTrue(sqlsSet.contains(SqlsEnum.INSERT));
 	}
 
 }
