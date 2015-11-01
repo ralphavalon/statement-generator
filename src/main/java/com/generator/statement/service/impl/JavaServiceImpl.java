@@ -1,4 +1,4 @@
-package com.generator.statement.service;
+package com.generator.statement.service.impl;
 
 import java.lang.reflect.Field;
 import java.util.Set;
@@ -9,10 +9,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.cfg.NamingStrategy;
 
 import com.generator.statement.TypeEnum;
+import com.generator.statement.service.JavaService;
 import com.generator.statement.util.PropertyReader;
 import com.generator.statement.util.Util;
 
-public class MainServiceImpl implements MainService {
+public class JavaServiceImpl implements JavaService {
 	
 	private String insertPreparedStatement = "";
 	private String resultSetStatement = "";
@@ -21,7 +22,7 @@ public class MainServiceImpl implements MainService {
 	private static final String FIELDS_TO_IGNORE = PropertyReader.getProperty("ignore_fields");
 	private static Set<String> toIgnoreSet;
 	
-	public MainServiceImpl() {
+	public JavaServiceImpl() {
 		toIgnoreSet = Util.removeUselessData(FIELDS_TO_IGNORE);
 	}
 

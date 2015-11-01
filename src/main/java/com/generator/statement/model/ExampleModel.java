@@ -5,7 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
-@Table(name="exampleModel")
+@Table(name="exampleModelTable")
 public class ExampleModel {
 	
 	private int intValue;

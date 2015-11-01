@@ -32,8 +32,8 @@ public class Results {
 			+ "exampleModel.setDoubleValue(resultSet.getDouble(\"double_value\"));\n"
 			+ "exampleModel.setExampleObject(resultSet.getObject(\"example_object\"));\n";
 
-	protected String insertSQLStatementStringEJB3NamingStrategy = "INSERT INTO tableName(intValue,stringValue,dateValue,bool,longValue,floatValue,doubleValue,exampleObject) VALUES (?,?,?,?,?,?,?,?);\n";
+	protected String insertSQLStatementStringEJB3NamingStrategy = "INSERT INTO exampleModelTable(intValue,stringValue,dateValue,bool,longValue,floatValue,doubleValue,exampleObject) VALUES (?,?,?,?,?,?,?,?);\n";
 	
-	protected String insertSQLStatementStringImprovedNamingStrategy = "INSERT INTO tableName(int_value,string_value,date_value,bool,long_value,float_value,double_value,example_object) VALUES (?,?,?,?,?,?,?,?);\n";
+	protected String insertSQLStatementStringImprovedNamingStrategy = "INSERT INTO exampleModelTable(int_value,string_value,date_value,bool,long_value,float_value,double_value,example_object) VALUES (?,?,?,?,?,?,?,?);\n";
 
 }

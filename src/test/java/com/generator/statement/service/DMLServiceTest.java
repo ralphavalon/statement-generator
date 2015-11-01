@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.generator.statement.Results;
 import com.generator.statement.model.ExampleModel;
+import com.generator.statement.service.impl.DMLServiceImpl;
 
 public class DMLServiceTest extends Results {
 
