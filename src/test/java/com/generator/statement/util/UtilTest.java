@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.generator.statement.config.Statements;
+import com.generator.statement.config.StatementsEnum;
 
 public class UtilTest {
 	
@@ -20,10 +20,10 @@ public class UtilTest {
 	
 	@Test
 	public void testSuccessGetStatements() {
-		Set<Statements> statements = Util.getStatements();
+		Set<StatementsEnum> statements = Util.getStatements();
 		assertEquals(2, statements.size());
-		assertTrue(statements.contains(Statements.PSTM));
-		assertTrue(statements.contains(Statements.RESULTSET));
+		assertTrue(statements.contains(StatementsEnum.PSTM));
+		assertTrue(statements.contains(StatementsEnum.RESULTSET));
 	}
 	
 	@Test

@@ -7,11 +7,11 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.generator.statement.config.Statements;
+import com.generator.statement.config.StatementsEnum;
 
 public class Util {
 	
-	private static Set<Statements> statementsSet = new HashSet<Statements>();
+	private static Set<StatementsEnum> statementsSet = new HashSet<StatementsEnum>();
 	
 	public static String removeLastComma(String string) {
 		if (StringUtils.isNotBlank(string)) {
@@ -20,9 +20,9 @@ public class Util {
 		return string;
 	}
 	
-	public static Set<Statements> getStatements() {
+	public static Set<StatementsEnum> getStatements() {
 		for(String statementString : removeUselessData(PropertyReader.getProperty("statements"))) {
-			statementsSet.add(Statements.getByName(statementString));
+			statementsSet.add(StatementsEnum.getByName(statementString));
 		}
 		statementsSet.removeAll(Collections.singleton(null));
 		return statementsSet;

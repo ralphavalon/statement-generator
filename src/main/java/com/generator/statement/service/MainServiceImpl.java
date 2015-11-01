@@ -3,7 +3,10 @@ package com.generator.statement.service;
 import java.lang.reflect.Field;
 import java.util.Set;
 
+import javax.persistence.Column;
+
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.cfg.NamingStrategy;
 
 import com.generator.statement.TypeEnum;
 import com.generator.statement.util.PropertyReader;
@@ -11,12 +14,10 @@ import com.generator.statement.util.Util;
 
 public class MainServiceImpl implements MainService {
 	
-	private String insertSQLStatement = "";
 	private String insertPreparedStatement = "";
 	private String resultSetStatement = "";
 	private static final String PREPARED_STATEMENT_VARIABLE = PropertyReader.getProperty("prepared_statement");
 	private static final String RESULT_SET_VARIABLE = PropertyReader.getProperty("result_set");
-	private static final String TABLE_NAME = PropertyReader.getProperty("table_name");
 	private static final String FIELDS_TO_IGNORE = PropertyReader.getProperty("ignore_fields");
 	private static Set<String> toIgnoreSet;
 	
@@ -24,19 +25,7 @@ public class MainServiceImpl implements MainService {
 		toIgnoreSet = Util.removeUselessData(FIELDS_TO_IGNORE);
 	}
 
-	public <T> String getInsertSQLStatement(Class<T> klazz) {
-		Field[] fields = klazz.getDeclaredFields();
-		insertSQLStatement += "INSERT INTO " + TABLE_NAME + "(";
-		for (Field field : fields) {
-			if(!isIgnored(field)) {
-				insertSQLStatement += field.getName() + ",";
-			}
-		}
-		insertSQLStatement = Util.removeLastComma(insertSQLStatement);
-		insertSQLStatement += String.format(") VALUES (%s);\n", Util.removeLastComma(StringUtils.repeat("?,", fieldsToUse(fields))));
-		return insertSQLStatement;
-	}
-
+	@Override
 	public <T> String getPreparedStatement(Class<T> klazz) {
 		int i = 0;
 		for (Field field : klazz.getDeclaredFields()) {
@@ -62,16 +51,21 @@ public class MainServiceImpl implements MainService {
 	
 
 	@Override
-	public <T> String getResultSetStatement(Class<T> klazz) {
+	public <T> String getResultSetStatement(Class<T> klazz, NamingStrategy namingStrategy) {
 		for (Field field : klazz.getDeclaredFields()) {
 			if(!isIgnored(field)) {
 				TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType().getSimpleName());
 				appendResultSetStatement("%s.set%s(%s", klazz, field);
-				appendResultSetStatement(".get%s(\"%s\"))", typeEnum, field);
+				appendResultSetStatement(".get%s(\"%s\"))", typeEnum, getColumnName(namingStrategy, field));
 			}
 		}
 		
 		return resultSetStatement;
+	}
+
+	private String getColumnName(NamingStrategy namingStrategy, Field field) {
+		Column columnAnnotation = field.getAnnotation(Column.class);
+		return (columnAnnotation != null) ? columnAnnotation.name() : namingStrategy.columnName(field.getName());
 	}
 
 	private void appendInsertPreparedStatement(String string, int index, TypeEnum typeEnum) {
@@ -88,10 +82,10 @@ public class MainServiceImpl implements MainService {
 				RESULT_SET_VARIABLE);
 	}
 	
-	private <T> void appendResultSetStatement(String string, TypeEnum typeEnum, Field field) {
+	private <T> void appendResultSetStatement(String string, TypeEnum typeEnum, String columnName) {
 		resultSetStatement += String.format(string + ";\n", 
 				StringUtils.capitalize(typeEnum.getValue()),
-			    field.getName()); 
+			    columnName); 
 	}
 
 	private <T> void appendInsertPreparedStatement(String string, Class<T> klazz, Field field) {
@@ -102,10 +96,6 @@ public class MainServiceImpl implements MainService {
 	
 	private boolean isIgnored(Field field) {
 		return toIgnoreSet.contains(field.getName());
-	}
-	
-	private int fieldsToUse(Field[] fields) {
-		return fields.length - toIgnoreSet.size();
 	}
 	
 }

@@ -2,6 +2,10 @@ package com.generator.statement.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
+
+@Table(name="exampleModel")
 public class ExampleModel {
 	
 	private int intValue;
@@ -9,6 +13,7 @@ public class ExampleModel {
 	private String stringToIgnore;
 	private Date dateToIgnore;
 	private Date dateValue;
+	@Column(name="bool")
 	private boolean booleanValue;
 	private Long longValue;
 	private float floatValue;
