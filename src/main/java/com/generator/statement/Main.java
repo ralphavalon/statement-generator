@@ -18,14 +18,16 @@ public class Main {
 	private static JavaService javaService;
 	private static DMLService dmlService;
 	private static NamingStrategy namingStrategy;
+	private static Class<?> klazz;
 	
 	static {
-		javaService = new JavaServiceImpl();
-		dmlService = new DMLServiceImpl();
 		namingStrategy = NamingStrategyEnum.getNamingStrategyByString(PropertyReader.getProperty("naming_strategy"));
+		dmlService = new DMLServiceImpl();
+		javaService = new JavaServiceImpl();
 	}
 	
 	public static void main(String[] args) {
+		klazz = ExampleModel.class;
 		generateSqls();
 		generateStatements();
 	}
@@ -34,7 +36,7 @@ public class Main {
 		for (SqlsEnum sqlsEnum : Util.getSqls()) {
 			switch (sqlsEnum) {
 			case INSERT:
-				print(dmlService.getInsertSQLStatement(ExampleModel.class, namingStrategy));
+				print(dmlService.getInsertSQLStatement(klazz, namingStrategy));
 				break;
 			default:
 				break;
@@ -46,10 +48,10 @@ public class Main {
 		for (StatementsEnum statementsEnum : Util.getStatements()) {
 			switch (statementsEnum) {
 			case PSTM:
-				print(javaService.getPreparedStatement( ExampleModel.class));
+				print(javaService.getPreparedStatement( klazz));
 				break;
 			case RESULTSET:
-				print(javaService.getResultSetStatement(ExampleModel.class, namingStrategy));
+				print(javaService.getResultSetStatement(klazz, namingStrategy));
 				break;
 			default:
 				break;
