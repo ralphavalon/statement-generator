@@ -22,26 +22,31 @@ public class Util {
 		return string;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Set<StatementsEnum> getStatements() {
 		for(String statementString : removeUselessData(PropertyReader.getProperty("statements"))) {
 			statementsSet.add(StatementsEnum.getByName(statementString));
 		}
-		statementsSet.removeAll(Collections.singleton(null));
-		return statementsSet;
+		return (Set<StatementsEnum>) removeNull(statementsSet);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Set<String> removeUselessData(String string) {
 		Set<String> usefulData = new HashSet<String>(Arrays.asList(string.replace(" ", "").split(",")));
-		usefulData.removeAll(Collections.singleton(null));
-		return usefulData;
+		return (Set<String>) removeNull(usefulData);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Set<SqlsEnum> getSqls() {
 		for(String sqlsString : removeUselessData(PropertyReader.getProperty("sqls"))) {
 			sqlsSet.add(SqlsEnum.getByName(sqlsString));
 		}
-		sqlsSet.removeAll(Collections.singleton(null));
-		return sqlsSet;
+		return (Set<SqlsEnum>) removeNull(sqlsSet);
+	}
+	
+	public static Set<?> removeNull(Set<?> set) {
+		set.removeAll(Collections.singleton(null));
+		return set;
 	}
 	
 }

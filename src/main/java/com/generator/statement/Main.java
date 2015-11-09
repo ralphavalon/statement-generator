@@ -5,9 +5,9 @@ import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.hibernate.cfg.NamingStrategy;
 
@@ -24,11 +24,11 @@ import com.generator.statement.util.Util;
 public class Main {
 
 	private static final String PACKAGE_REGEX = "package\\s+([a-zA_Z_][\\.\\w]*);";
-	private static final String JAVA_SUFFIX = ".java";
 	private static JavaService javaService;
 	private static DMLService dmlService;
 	private static NamingStrategy namingStrategy;
 	private static Class<?> klazz;
+	private static Set<File> javaFiles;
 
 	static {
 		namingStrategy = NamingStrategyEnum.getNamingStrategyByString(PropertyReader.getProperty("naming_strategy"));
@@ -37,20 +37,30 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Runtime.getRuntime().exec("javac -cp \"./*\" *.java");
-		List<File> javaFiles = getJavaFilesForCurrentFolder();
-		for (File file : javaFiles) {
-			String classPackage = getClassPackage(file);
-			loadClass(file, classPackage);
-			generateSqls();
-			generateStatements();
+		//TODO: Read and use "type" attribute on config.properties
+		if(args.length > 0) {
+			javaFiles = new HashSet<File>();
+			for (String filename : args) {
+				if(FileEnum.getFileEnumByFilename(filename) != null) {
+					javaFiles.add(new File(filename));
+				}
+			}
+			//TODO: Read the file (java or class) and generate all stuff
+		} else {
+			Runtime.getRuntime().exec("javac -cp \"./*\" *.java");
+			javaFiles = getJavaFilesForCurrentFolder();
+			for (File file : javaFiles) {
+				loadClass(file, getClassPackage(file));
+				generateSqls();
+				generateStatements();
+			}
 		}
 	}
 
-	private static List<File> getJavaFilesForCurrentFolder() {
-		List<File> fileList = new ArrayList<File>();
+	private static Set<File> getJavaFilesForCurrentFolder() {
+		Set<File> fileList = new HashSet<File>();
 		for (File file : new File(".").listFiles()) {
-			if (file.getName().endsWith(JAVA_SUFFIX)) {
+			if (file.getName().endsWith(FileEnum.JAVA.getSuffix())) {
 				fileList.add(file);
 			}
 		}
@@ -61,7 +71,7 @@ public class Main {
 	private static void loadClass(File file, String classPackage) throws MalformedURLException {
 		try {
 			ClassLoader classLoader = new URLClassLoader(new URL[]{ file.toURI().toURL() });
-			klazz = classLoader.loadClass(classPackage + file.getName().replace(JAVA_SUFFIX, ""));
+			klazz = classLoader.loadClass(classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), ""));
 			System.out.println(classPackage + klazz.getSimpleName());
 		} catch (ClassNotFoundException e) {
 			System.out.println("Probably the class didn't compile.");
