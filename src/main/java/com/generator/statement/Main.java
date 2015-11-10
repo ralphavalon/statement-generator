@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.Field;
+import org.apache.bcel.classfile.JavaClass;
 import org.hibernate.cfg.NamingStrategy;
 
 import com.generator.statement.config.NamingStrategyEnum;
@@ -45,14 +48,41 @@ public class Main {
 					javaFiles.add(new File(filename));
 				}
 			}
+			File file = javaFiles.iterator().next();
+			ClassParser parser = new ClassParser(file.getName());
+			JavaClass javaClass = parser.parse();
+			klazz = javaClass.getClass();
+			System.out.println(javaClass.getAnnotationEntries()[0].getElementValuePairs()[0].getValue().stringifyValue());
+			for (Field field : javaClass.getFields()) {
+				System.out.println(field.getName());
+				if(field.getAnnotationEntries().length > 0) {
+					System.out.println(field.getAnnotationEntries()[0].getElementValuePairs()[0].getValue().stringifyValue());
+				}
+			}
+			// TODO: Specific to JavaClass
+//			loadClass(file, javaClass.getPackageName() + ".");
+			System.out.println(klazz.getSimpleName());
+//			generateSqls();
+//			generateStatements();
 			//TODO: Read the file (java or class) and generate all stuff
 		} else {
-			Runtime.getRuntime().exec("javac -cp \"./*\" *.java");
-			javaFiles = getJavaFilesForCurrentFolder();
-			for (File file : javaFiles) {
-				loadClass(file, getClassPackage(file));
-				generateSqls();
-				generateStatements();
+			FileEnum fileEnum = FileEnum.getFileEnumByType(PropertyReader.getProperty("type"));
+			if(fileEnum != null) {
+				switch (fileEnum) {
+				case JAVA:
+					Runtime.getRuntime().exec("javac -cp \"./*\" *.java");
+					javaFiles = getJavaFilesForCurrentFolder();
+					for (File file : javaFiles) {
+						loadClass(file, getClassPackage(file));
+						generateSqls();
+						generateStatements();
+					}
+					break;
+				case CLASS:
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}
@@ -71,8 +101,10 @@ public class Main {
 	private static void loadClass(File file, String classPackage) throws MalformedURLException {
 		try {
 			ClassLoader classLoader = new URLClassLoader(new URL[]{ file.toURI().toURL() });
-			klazz = classLoader.loadClass(classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), ""));
+			System.out.println(classPackage + file.getName().replace(FileEnum.CLASS.getSuffix(), ""));
+			klazz = classLoader.loadClass(classPackage + file.getName().replace(FileEnum.CLASS.getSuffix(), ""));
 			System.out.println(classPackage + klazz.getSimpleName());
+			System.out.println("Sucesso");
 		} catch (ClassNotFoundException e) {
 			System.out.println("Probably the class didn't compile.");
 			System.out.println(e.getMessage());
@@ -131,4 +163,5 @@ public class Main {
 	static void print(String string) {
 		System.out.println(string);
 	}
+	
 }
