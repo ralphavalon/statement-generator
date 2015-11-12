@@ -10,16 +10,18 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.bcel.classfile.ClassParser;
-import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.JavaClass;
 import org.hibernate.cfg.NamingStrategy;
 
 import com.generator.statement.config.NamingStrategyEnum;
 import com.generator.statement.config.SqlsEnum;
 import com.generator.statement.config.StatementsEnum;
+import com.generator.statement.factory.InterpretedClassFactory;
+import com.generator.statement.model.ExampleModel;
 import com.generator.statement.service.DMLService;
 import com.generator.statement.service.JavaService;
 import com.generator.statement.service.impl.DMLServiceImpl;
+import com.generator.statement.service.impl.InterpretedJavaFile;
 import com.generator.statement.service.impl.JavaServiceImpl;
 import com.generator.statement.util.PropertyReader;
 import com.generator.statement.util.Util;
@@ -51,14 +53,11 @@ public class Main {
 			File file = javaFiles.iterator().next();
 			ClassParser parser = new ClassParser(file.getName());
 			JavaClass javaClass = parser.parse();
-			klazz = javaClass.getClass();
-			System.out.println(javaClass.getAnnotationEntries()[0].getElementValuePairs()[0].getValue().stringifyValue());
-			for (Field field : javaClass.getFields()) {
-				System.out.println(field.getName());
-				if(field.getAnnotationEntries().length > 0) {
-					System.out.println(field.getAnnotationEntries()[0].getElementValuePairs()[0].getValue().stringifyValue());
-				}
-			}
+			InterpretedClassFactory.getInstance(javaClass).getClassFieldList();
+			klazz = ExampleModel.class;
+			InterpretedClassFactory.getInstance(klazz).getClassFieldList();
+//			new InterpretedClassFile(javaClass).getClassFieldList();
+//			new InterpretedJavaFile(ExampleModel.class).getClassFieldList();
 			// TODO: Specific to JavaClass
 //			loadClass(file, javaClass.getPackageName() + ".");
 			System.out.println(klazz.getSimpleName());
