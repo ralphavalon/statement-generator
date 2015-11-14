@@ -23,7 +23,7 @@ public class InterpretedClassFile implements InterpretedClass {
 	
 	public InterpretedClassFile(JavaClass javaClass) {
 		this.javaClass = javaClass;
-		this.name = javaClass.getClassName();
+		this.name = removePackageDefinition(javaClass.getClassName(), PACKAGE_DOT_SEPARATOR, false);
 		getClassFieldList();
 	}
 	

@@ -24,19 +24,37 @@ public class JavaServiceTest extends Results {
 	@Test
 	public void testSuccessGetPreparedStatementJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		assertEquals(preparedStatementString, javaService.getPreparedStatement(ExampleModel.class));
+		assertEquals(preparedStatementString, javaService.getPreparedStatement(interpretedClass));
+	}
+	
+	@Test
+	public void testSuccessGetPreparedStatementClass() {
+		interpretedClass = InterpretedClassFactory.getInterpretedClass(getJavaClass());
+		assertEquals(preparedStatementString, javaService.getPreparedStatement(interpretedClass));
 	}
 
 	@Test
 	public void testSuccessGetResultSetStatementEJB3NamingStrategyJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		assertEquals(resultSetStringEJB3NamingStrategy, javaService.getResultSetStatement(ExampleModel.class, new EJB3NamingStrategy()));
+		assertEquals(resultSetStringEJB3NamingStrategy, javaService.getResultSetStatement(interpretedClass, new EJB3NamingStrategy()));
+	}
+	
+	@Test
+	public void testSuccessGetResultSetStatementEJB3NamingStrategyClass() {
+		interpretedClass = InterpretedClassFactory.getInterpretedClass(getJavaClass());
+		assertEquals(resultSetStringEJB3NamingStrategy, javaService.getResultSetStatement(interpretedClass, new EJB3NamingStrategy()));
 	}
 	
 	@Test
 	public void testSuccessGetResultSetStatementImprovedNamingStrategyJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		assertEquals(resultSetStringImprovedNamingStrategy, javaService.getResultSetStatement(ExampleModel.class, new ImprovedNamingStrategy()));
+		assertEquals(resultSetStringImprovedNamingStrategy, javaService.getResultSetStatement(interpretedClass, new ImprovedNamingStrategy()));
+	}
+	
+	@Test
+	public void testSuccessGetResultSetStatementImprovedNamingStrategyClass() {
+		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
+		assertEquals(resultSetStringImprovedNamingStrategy, javaService.getResultSetStatement(interpretedClass, new ImprovedNamingStrategy()));
 	}
 	
 	private JavaClass getJavaClass() {

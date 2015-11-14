@@ -1,14 +1,13 @@
 package com.generator.statement.service.impl;
 
-import java.lang.reflect.Field;
 import java.util.Set;
-
-import javax.persistence.Column;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.cfg.NamingStrategy;
 
 import com.generator.statement.TypeEnum;
+import com.generator.statement.model.ClassField;
+import com.generator.statement.service.InterpretedClass;
 import com.generator.statement.service.JavaService;
 import com.generator.statement.util.PropertyReader;
 import com.generator.statement.util.Util;
@@ -17,6 +16,7 @@ public class JavaServiceImpl implements JavaService {
 	
 	private String insertPreparedStatement = "";
 	private String resultSetStatement = "";
+	private static final String COLUMN = "Column";
 	private static final String PREPARED_STATEMENT_VARIABLE = PropertyReader.getProperty("prepared_statement");
 	private static final String RESULT_SET_VARIABLE = PropertyReader.getProperty("result_set");
 	private static final String FIELDS_TO_IGNORE = PropertyReader.getProperty("ignore_fields");
@@ -26,47 +26,8 @@ public class JavaServiceImpl implements JavaService {
 		toIgnoreSet = Util.removeUselessData(FIELDS_TO_IGNORE);
 	}
 
-	@Override
-	public <T> String getPreparedStatement(Class<T> klazz) {
-		int i = 0;
-		for (Field field : klazz.getDeclaredFields()) {
-			if(!isIgnored(field)) {
-				TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType().getSimpleName());
-				appendInsertPreparedStatement("%s.set%s(%d, ", ++i, typeEnum);
-				
-				switch (typeEnum) {
-				case DATE:
-					appendInsertPreparedStatement("new Date(%s.get%s().getTime()))", klazz, field);
-					break;
-				case BOOLEAN:
-					appendInsertPreparedStatement("%s.is%s())", klazz, field);
-					break;
-				default:
-					appendInsertPreparedStatement("%s.get%s())", klazz, field);
-					break;
-				}
-			}
-		}
-		return insertPreparedStatement;
-	}
-	
-
-	@Override
-	public <T> String getResultSetStatement(Class<T> klazz, NamingStrategy namingStrategy) {
-		for (Field field : klazz.getDeclaredFields()) {
-			if(!isIgnored(field)) {
-				TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType().getSimpleName());
-				appendResultSetStatement("%s.set%s(%s", klazz, field);
-				appendResultSetStatement(".get%s(\"%s\"))", typeEnum, getColumnName(namingStrategy, field));
-			}
-		}
-		
-		return resultSetStatement;
-	}
-
-	private String getColumnName(NamingStrategy namingStrategy, Field field) {
-		Column columnAnnotation = field.getAnnotation(Column.class);
-		return (columnAnnotation != null) ? columnAnnotation.name() : namingStrategy.columnName(field.getName());
+	private String getColumnName(NamingStrategy namingStrategy, ClassField classField) {
+		return (classField.hasAnnotation(COLUMN)) ? classField.getAnnotationAttribute(COLUMN, "name") : namingStrategy.columnName(classField.getName());
 	}
 
 	private void appendInsertPreparedStatement(String string, int index, TypeEnum typeEnum) {
@@ -76,9 +37,9 @@ public class JavaServiceImpl implements JavaService {
 				index);
 	}
 	
-	private <T> void appendResultSetStatement(String string, Class<T> klazz, Field field) {
+	private void appendResultSetStatement(String string, InterpretedClass interpretedClass, ClassField field) {
 		resultSetStatement += String.format(string, 
-				StringUtils.uncapitalize(klazz.getSimpleName()),
+				StringUtils.uncapitalize(interpretedClass.getName()),
 				StringUtils.capitalize(field.getName()),
 				RESULT_SET_VARIABLE);
 	}
@@ -89,14 +50,51 @@ public class JavaServiceImpl implements JavaService {
 			    columnName); 
 	}
 
-	private <T> void appendInsertPreparedStatement(String string, Class<T> klazz, Field field) {
+	private void appendInsertPreparedStatement(String string, InterpretedClass interpretedClass, ClassField field) {
 		insertPreparedStatement += String.format(string + ";\n", 
-			     StringUtils.uncapitalize(klazz.getSimpleName()), 
+			     StringUtils.uncapitalize(interpretedClass.getName()), 
 			     StringUtils.capitalize(field.getName()));
 	}
+
+	@Override
+	public String getPreparedStatement(InterpretedClass interpretedClass) {
+		int i = 0;
+		for (ClassField field : interpretedClass.getClassFieldList()) {
+			if(!isIgnored(field)) {
+				TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType());
+				appendInsertPreparedStatement("%s.set%s(%d, ", ++i, typeEnum);
+				
+				switch (typeEnum) {
+				case DATE:
+					appendInsertPreparedStatement("new Date(%s.get%s().getTime()))", interpretedClass, field);
+					break;
+				case BOOLEAN:
+					appendInsertPreparedStatement("%s.is%s())", interpretedClass, field);
+					break;
+				default:
+					appendInsertPreparedStatement("%s.get%s())", interpretedClass, field);
+					break;
+				}
+			}
+		}
+		return insertPreparedStatement;
+	}
 	
-	private boolean isIgnored(Field field) {
+	private boolean isIgnored(ClassField field) {
 		return toIgnoreSet.contains(field.getName());
+	}
+
+	@Override
+	public String getResultSetStatement(InterpretedClass interpretedClass, NamingStrategy namingStrategy) {
+		for (ClassField field : interpretedClass.getClassFieldList()) {
+			if(!isIgnored(field)) {
+				TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType());
+				appendResultSetStatement("%s.set%s(%s", interpretedClass, field);
+				appendResultSetStatement(".get%s(\"%s\"))", typeEnum, getColumnName(namingStrategy, field));
+			}
+		}
+		
+		return resultSetStatement;
 	}
 	
 }

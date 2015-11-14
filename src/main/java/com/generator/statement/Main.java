@@ -150,10 +150,10 @@ public class Main {
 		for (StatementsEnum statementsEnum : Util.getStatements()) {
 			switch (statementsEnum) {
 			case PSTM:
-				print(javaService.getPreparedStatement(klazz));
+				print(javaService.getPreparedStatement(interpretedClass));
 				break;
 			case RESULTSET:
-				print(javaService.getResultSetStatement(klazz, namingStrategy));
+				print(javaService.getResultSetStatement(interpretedClass, namingStrategy));
 				break;
 			default:
 				break;
