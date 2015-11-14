@@ -8,7 +8,7 @@ import com.generator.statement.service.impl.InterpretedJavaFile;
 
 public class InterpretedClassFactory {
 	
-	public static InterpretedClass getInstance(Object object) {
+	public static InterpretedClass getInterpretedClass(Object object) {
 		if(object instanceof JavaClass) {
 			return new InterpretedClassFile((JavaClass) object);
 		}

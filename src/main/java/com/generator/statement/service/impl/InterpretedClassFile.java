@@ -16,11 +16,20 @@ import com.generator.statement.service.InterpretedClass;
 public class InterpretedClassFile implements InterpretedClass {
 	
 	private JavaClass javaClass;
-	private static final String PACKAGE_SEPARATOR = ".";
+	private String name;
+	private static final String PACKAGE_DOT_SEPARATOR = ".";
+	private static final String PACKAGE_SLASH_SEPARATOR = "/";
 //	private static final String COLUMN_ANNOTATION = "javax/persistence/Column";
 	
 	public InterpretedClassFile(JavaClass javaClass) {
 		this.javaClass = javaClass;
+		this.name = javaClass.getClassName();
+		getClassFieldList();
+	}
+	
+	@Override
+	public String getName() {
+		return name;
 	}
 	
 	@Override
@@ -37,23 +46,58 @@ public class InterpretedClassFile implements InterpretedClass {
 		ClassField classField = new ClassField(getType(field), field.getName());
 		AnnotationEntry[] annotationEntries = field.getAnnotationEntries();
 		if(annotationEntries.length > 0) {
-			getAnnotationMap(annotationEntries);
+			classField.setAnnotationMap(getAnnotationMap(annotationEntries));
 		}
 		return classField;
 	}
 
 	private String getType(Field field) {
 		String fieldType = field.getType().toString();
-		if(fieldType.contains(PACKAGE_SEPARATOR)) {
-			return fieldType.substring(fieldType.lastIndexOf(PACKAGE_SEPARATOR) + 1, fieldType.length());
+		if(fieldType.contains(PACKAGE_DOT_SEPARATOR)) {
+			return removePackageDefinition(fieldType, PACKAGE_DOT_SEPARATOR, false);
 		}
 		return fieldType;
 	}
 
+	private String removePackageDefinition(String string, String separator, boolean removeSemicolon) {
+		if(removeSemicolon) {
+			return string.substring(string.lastIndexOf(separator) + 1, string.length() - 1);	
+		}
+		return string.substring(string.lastIndexOf(separator) + 1, string.length());
+	}
+	
+	@Override
+	public String getClassAnnotationAttribute(String annotation, String attribute) {
+		for (AnnotationEntry annotationEntry : javaClass.getAnnotationEntries()) {
+			String annotationType = annotationEntry.getAnnotationType();
+			if(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, true).equals(annotation)) {
+				for (ElementValuePair elementValuePair : annotationEntry.getElementValuePairs()) {
+					if(elementValuePair.getNameString().equalsIgnoreCase(attribute)) {
+						return elementValuePair.getValue().stringifyValue();
+					}
+				}
+			}
+		}
+		return "";
+	}
+	
+	public boolean hasClassAnnotation(String annotation) {
+		for (AnnotationEntry annotationEntry : javaClass.getAnnotationEntries()) {
+			String annotationType = annotationEntry.getAnnotationType();
+			if(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, true).equals(annotation)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+
 	private Map<String, Map<String, String>> getAnnotationMap(AnnotationEntry[] annotationEntries) {
 		Map<String, Map<String, String>> annotationMap = new HashMap<String, Map<String, String>>();
 		for (AnnotationEntry annotationEntry : annotationEntries) {
-			annotationMap.put(annotationEntry.getAnnotationType(), getAnnotationAttributesMap(annotationEntry));
+			String annotationType = annotationEntry.getAnnotationType();
+			annotationMap.put(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, true), getAnnotationAttributesMap(annotationEntry));
 		}
 		return annotationMap;
 	}

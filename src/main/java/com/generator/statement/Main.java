@@ -19,9 +19,9 @@ import com.generator.statement.config.StatementsEnum;
 import com.generator.statement.factory.InterpretedClassFactory;
 import com.generator.statement.model.ExampleModel;
 import com.generator.statement.service.DMLService;
+import com.generator.statement.service.InterpretedClass;
 import com.generator.statement.service.JavaService;
 import com.generator.statement.service.impl.DMLServiceImpl;
-import com.generator.statement.service.impl.InterpretedJavaFile;
 import com.generator.statement.service.impl.JavaServiceImpl;
 import com.generator.statement.util.PropertyReader;
 import com.generator.statement.util.Util;
@@ -33,6 +33,7 @@ public class Main {
 	private static DMLService dmlService;
 	private static NamingStrategy namingStrategy;
 	private static Class<?> klazz;
+	private static InterpretedClass interpretedClass;
 	private static Set<File> javaFiles;
 
 	static {
@@ -53,15 +54,16 @@ public class Main {
 			File file = javaFiles.iterator().next();
 			ClassParser parser = new ClassParser(file.getName());
 			JavaClass javaClass = parser.parse();
-			InterpretedClassFactory.getInstance(javaClass).getClassFieldList();
+			interpretedClass = InterpretedClassFactory.getInterpretedClass(javaClass);
+			generateSqls();
+//			System.out.println(interpretedClass.getClassAnnotationAttribute("Table", "name"));
 			klazz = ExampleModel.class;
-			InterpretedClassFactory.getInstance(klazz).getClassFieldList();
-//			new InterpretedClassFile(javaClass).getClassFieldList();
-//			new InterpretedJavaFile(ExampleModel.class).getClassFieldList();
+			interpretedClass = InterpretedClassFactory.getInterpretedClass(klazz);
+//			System.out.println(interpretedClass.getClassAnnotationAttribute("Table", "name"));
 			// TODO: Specific to JavaClass
 //			loadClass(file, javaClass.getPackageName() + ".");
 			System.out.println(klazz.getSimpleName());
-//			generateSqls();
+			generateSqls();
 //			generateStatements();
 			//TODO: Read the file (java or class) and generate all stuff
 		} else {
@@ -136,7 +138,7 @@ public class Main {
 		for (SqlsEnum sqlsEnum : Util.getSqls()) {
 			switch (sqlsEnum) {
 			case INSERT:
-				print(dmlService.getInsertSQLStatement(klazz, namingStrategy));
+				print(dmlService.getInsertSQLStatement(interpretedClass, namingStrategy));
 				break;
 			default:
 				break;

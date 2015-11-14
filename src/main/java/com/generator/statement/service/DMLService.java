@@ -4,6 +4,6 @@ import org.hibernate.cfg.NamingStrategy;
 
 public interface DMLService {
 	
-	<T> String getInsertSQLStatement(Class<T> klazz, NamingStrategy namingStrategy);
+	String getInsertSQLStatement(InterpretedClass interpretedClass, NamingStrategy namingStrategy);
 	
 }
