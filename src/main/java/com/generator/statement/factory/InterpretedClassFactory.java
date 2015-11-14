@@ -12,7 +12,7 @@ public class InterpretedClassFactory {
 		if(object instanceof JavaClass) {
 			return new InterpretedClassFile((JavaClass) object);
 		}
-		if(object instanceof Class) {
+		if(object instanceof Class) { //maintained because JavaClass API is Snapshot version
 			return new InterpretedJavaFile((Class<?>) object);
 		}
 		return null;

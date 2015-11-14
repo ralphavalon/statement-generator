@@ -33,7 +33,7 @@ public enum FileEnum {
 	
 	public static FileEnum getFileEnumByType(String type) {
 		for (FileEnum fileEnum : FileEnum.values()) {
-			if(fileEnum.getSuffix().equalsIgnoreCase(type)) {
+			if(fileEnum.getType().equalsIgnoreCase(type)) {
 				return fileEnum;
 			}
 		}

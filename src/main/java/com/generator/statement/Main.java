@@ -2,6 +2,7 @@ package com.generator.statement;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.bcel.classfile.ClassFormatException;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 import org.hibernate.cfg.NamingStrategy;
@@ -17,7 +19,6 @@ import com.generator.statement.config.NamingStrategyEnum;
 import com.generator.statement.config.SqlsEnum;
 import com.generator.statement.config.StatementsEnum;
 import com.generator.statement.factory.InterpretedClassFactory;
-import com.generator.statement.model.ExampleModel;
 import com.generator.statement.service.DMLService;
 import com.generator.statement.service.InterpretedClass;
 import com.generator.statement.service.JavaService;
@@ -34,47 +35,32 @@ public class Main {
 	private static NamingStrategy namingStrategy;
 	private static Class<?> klazz;
 	private static InterpretedClass interpretedClass;
-	private static Set<File> javaFiles;
+	private static Set<File> fileSet;
 
 	static {
 		namingStrategy = NamingStrategyEnum.getNamingStrategyByString(PropertyReader.getProperty("naming_strategy"));
 		dmlService = new DMLServiceImpl();
 		javaService = new JavaServiceImpl();
 	}
-
+	
 	public static void main(String[] args) throws Exception {
 		//TODO: Read and use "type" attribute on config.properties
-		if(args.length > 0) {
-			javaFiles = new HashSet<File>();
-			for (String filename : args) {
-				if(FileEnum.getFileEnumByFilename(filename) != null) {
-					javaFiles.add(new File(filename));
-				}
+		if(args != null && args.length > 0) {
+			for (File file : getFileSet(args)) {
+				FileEnum fileEnum = FileEnum.getFileEnumByFilename(file.getName());
+				interpretedClass = InterpretedClassFactory.getInterpretedClass(getClass(file, fileEnum));
+				generateSqls();
+				generateStatements();
 			}
-			File file = javaFiles.iterator().next();
-			ClassParser parser = new ClassParser(file.getName());
-			JavaClass javaClass = parser.parse();
-			interpretedClass = InterpretedClassFactory.getInterpretedClass(javaClass);
-			generateSqls();
-//			System.out.println(interpretedClass.getClassAnnotationAttribute("Table", "name"));
-			klazz = ExampleModel.class;
-			interpretedClass = InterpretedClassFactory.getInterpretedClass(klazz);
-//			System.out.println(interpretedClass.getClassAnnotationAttribute("Table", "name"));
-			// TODO: Specific to JavaClass
-//			loadClass(file, javaClass.getPackageName() + ".");
-			System.out.println(klazz.getSimpleName());
-			generateSqls();
-//			generateStatements();
-			//TODO: Read the file (java or class) and generate all stuff
 		} else {
-			FileEnum fileEnum = FileEnum.getFileEnumByType(PropertyReader.getProperty("type"));
+			FileEnum fileEnum = FileEnum.getFileEnumByType(PropertyReader.getProperty("file_type"));
 			if(fileEnum != null) {
 				switch (fileEnum) {
 				case JAVA:
 					Runtime.getRuntime().exec("javac -cp \"./*\" *.java");
-					javaFiles = getJavaFilesForCurrentFolder();
-					for (File file : javaFiles) {
-						loadClass(file, getClassPackage(file));
+					fileSet = getJavaFilesForCurrentFolder();
+					for (File file : fileSet) {
+						interpretedClass = InterpretedClassFactory.getInterpretedClass(getClass(file, fileEnum));
 						generateSqls();
 						generateStatements();
 					}
@@ -88,27 +74,52 @@ public class Main {
 		}
 	}
 
-	private static Set<File> getJavaFilesForCurrentFolder() {
-		Set<File> fileList = new HashSet<File>();
-		for (File file : new File(".").listFiles()) {
-			if (file.getName().endsWith(FileEnum.JAVA.getSuffix())) {
-				fileList.add(file);
+	private static Set<File> getFileSet(String[] args) {
+		Set<File> fileSet = new HashSet<File>();
+		for (String filename : args) {
+			if(FileEnum.getFileEnumByFilename(filename) != null) {
+				fileSet.add(new File(filename));
 			}
 		}
-		return fileList;
+		return fileSet;
+	}
+	
+	private static Object getClass(File file, FileEnum fileEnum) throws ClassFormatException, IOException {
+		switch (fileEnum) {
+		case JAVA:
+			loadClass(file, getClassPackage(file));
+			return klazz;
+		case CLASS:
+			ClassParser parser = new ClassParser(file.getName());
+			JavaClass javaClass = parser.parse();
+			return javaClass;
+		default:
+			return null;
+		}
+	}
+
+	private static Set<File> getJavaFilesForCurrentFolder() {
+		Set<File> fileSet = new HashSet<File>();
+		for (File file : new File(".").listFiles()) {
+			if (file.getName().endsWith(FileEnum.JAVA.getSuffix())) {
+				fileSet.add(file);
+			}
+		}
+		return fileSet;
 	}
 
 	@SuppressWarnings("resource")
 	private static void loadClass(File file, String classPackage) throws MalformedURLException {
 		try {
 			ClassLoader classLoader = new URLClassLoader(new URL[]{ file.toURI().toURL() });
-			System.out.println(classPackage + file.getName().replace(FileEnum.CLASS.getSuffix(), ""));
-			klazz = classLoader.loadClass(classPackage + file.getName().replace(FileEnum.CLASS.getSuffix(), ""));
+			System.out.println(classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), ""));
+			klazz = classLoader.loadClass(classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), ""));
 			System.out.println(classPackage + klazz.getSimpleName());
 			System.out.println("Sucesso");
 		} catch (ClassNotFoundException e) {
 			System.out.println("Probably the class didn't compile.");
 			System.out.println(e.getMessage());
+			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
