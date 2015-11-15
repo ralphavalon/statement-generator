@@ -19,12 +19,12 @@ public class InterpretedClassFile implements InterpretedClass {
 	private String name;
 	private static final String PACKAGE_DOT_SEPARATOR = ".";
 	private static final String PACKAGE_SLASH_SEPARATOR = "/";
-//	private static final String COLUMN_ANNOTATION = "javax/persistence/Column";
+	private List<ClassField> classFieldList;
 	
 	public InterpretedClassFile(JavaClass javaClass) {
 		this.javaClass = javaClass;
 		this.name = removePackageDefinition(javaClass.getClassName(), PACKAGE_DOT_SEPARATOR, false);
-		getClassFieldList();
+		initClassFieldList();
 	}
 	
 	@Override
@@ -34,12 +34,14 @@ public class InterpretedClassFile implements InterpretedClass {
 	
 	@Override
 	public List<ClassField> getClassFieldList() {
-		List<ClassField> classFieldList = new ArrayList<ClassField>();
+		return classFieldList;
+	}
+
+	private void initClassFieldList() {
+		classFieldList = new ArrayList<ClassField>();
 		for (Field field : javaClass.getFields()) {
 			classFieldList.add(getClassField(field));
 		}
-		System.out.println("Class");
-		return classFieldList;
 	}
 
 	private ClassField getClassField(Field field) {
@@ -71,11 +73,16 @@ public class InterpretedClassFile implements InterpretedClass {
 		for (AnnotationEntry annotationEntry : javaClass.getAnnotationEntries()) {
 			String annotationType = annotationEntry.getAnnotationType();
 			if(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, true).equals(annotation)) {
-				for (ElementValuePair elementValuePair : annotationEntry.getElementValuePairs()) {
-					if(elementValuePair.getNameString().equalsIgnoreCase(attribute)) {
-						return elementValuePair.getValue().stringifyValue();
-					}
-				}
+				return getAttribute(annotationEntry, attribute); 
+			}
+		}
+		return "";
+	}
+
+	private String getAttribute(AnnotationEntry annotationEntry, String attribute) {
+		for (ElementValuePair elementValuePair : annotationEntry.getElementValuePairs()) {
+			if(elementValuePair.getNameString().equalsIgnoreCase(attribute)) {
+				return elementValuePair.getValue().stringifyValue();
 			}
 		}
 		return "";

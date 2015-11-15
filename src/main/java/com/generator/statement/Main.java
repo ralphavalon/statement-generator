@@ -44,34 +44,33 @@ public class Main {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		//TODO: Read and use "type" attribute on config.properties
-		if(args != null && args.length > 0) {
+		if(args.length > 0) {
 			for (File file : getFileSet(args)) {
 				FileEnum fileEnum = FileEnum.getFileEnumByFilename(file.getName());
-				interpretedClass = InterpretedClassFactory.getInterpretedClass(getClass(file, fileEnum));
-				generateSqls();
-				generateStatements();
+				execute(fileEnum, file);
 			}
 		} else {
 			FileEnum fileEnum = FileEnum.getFileEnumByType(PropertyReader.getProperty("file_type"));
 			if(fileEnum != null) {
-				switch (fileEnum) {
-				case JAVA:
-					Runtime.getRuntime().exec("javac -cp \"./*\" *.java");
-					fileSet = getJavaFilesForCurrentFolder();
-					for (File file : fileSet) {
-						interpretedClass = InterpretedClassFactory.getInterpretedClass(getClass(file, fileEnum));
-						generateSqls();
-						generateStatements();
-					}
-					break;
-				case CLASS:
-					break;
-				default:
-					break;
+				compileIfNeeded(fileEnum);
+				fileSet = getFilesForCurrentFolder(fileEnum);
+				for (File file : fileSet) {
+					execute(fileEnum, file);
 				}
 			}
 		}
+	}
+
+	private static void compileIfNeeded(FileEnum fileEnum) throws IOException {
+		if(fileEnum.equals(FileEnum.JAVA)) {
+			Runtime.getRuntime().exec("javac -cp \"./*\" *.java");
+		}
+	}
+
+	private static void execute(FileEnum fileEnum, File file) throws IOException {
+		interpretedClass = InterpretedClassFactory.getInterpretedClass(getClass(file, fileEnum));
+		generateSqls();
+		generateStatements();
 	}
 
 	private static Set<File> getFileSet(String[] args) {
@@ -98,10 +97,10 @@ public class Main {
 		}
 	}
 
-	private static Set<File> getJavaFilesForCurrentFolder() {
+	private static Set<File> getFilesForCurrentFolder(FileEnum fileEnum) {
 		Set<File> fileSet = new HashSet<File>();
 		for (File file : new File(".").listFiles()) {
-			if (file.getName().endsWith(FileEnum.JAVA.getSuffix())) {
+			if (file.getName().endsWith(fileEnum.getSuffix())) {
 				fileSet.add(file);
 			}
 		}
@@ -112,13 +111,10 @@ public class Main {
 	private static void loadClass(File file, String classPackage) throws MalformedURLException {
 		try {
 			ClassLoader classLoader = new URLClassLoader(new URL[]{ file.toURI().toURL() });
-			System.out.println(classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), ""));
+			System.out.println("Class: " + classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), ""));
 			klazz = classLoader.loadClass(classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), ""));
-			System.out.println(classPackage + klazz.getSimpleName());
-			System.out.println("Sucesso");
 		} catch (ClassNotFoundException e) {
-			System.out.println("Probably the class didn't compile.");
-			System.out.println(e.getMessage());
+			System.out.println("Probably the class didn't compile. Try to use \"javac -cp StatementGenerator-1.0.jar yourClass.java\"");
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,17 +124,16 @@ public class Main {
 	private static String getClassPackage(File file) throws FileNotFoundException {
 		Scanner sc = new Scanner(file);
 		String classPackage = "";
-		boolean notFound = true;
-		while (sc.hasNext() && notFound) {
+		boolean packageNotFound = true;
+		while (sc.hasNext() && packageNotFound) {
 			String line = sc.nextLine();
 
 			if (line.matches(PACKAGE_REGEX)) {
 				classPackage = line.split("\\s+")[1].replace(";", ".");
-//				System.out.println(classPackage);
-				notFound = false;
+				packageNotFound = false;
 			}
 			if (line.contains("public class")) {
-				notFound = false;
+				packageNotFound = false;
 			}
 		}
 		sc.close();

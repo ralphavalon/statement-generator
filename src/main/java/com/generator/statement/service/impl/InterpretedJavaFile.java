@@ -20,7 +20,7 @@ public class InterpretedJavaFile implements InterpretedClass {
 	public InterpretedJavaFile(Class<?> klazz) {
 		this.klazz = klazz;
 		this.name = klazz.getSimpleName();
-		getClassFieldList();
+		initClassFieldList();
 	}
 	
 	@Override
@@ -30,12 +30,14 @@ public class InterpretedJavaFile implements InterpretedClass {
 	
 	@Override
 	public List<ClassField> getClassFieldList() {
+		return classFieldList;
+	}
+
+	private void initClassFieldList() {
 		classFieldList = new ArrayList<ClassField>();
 		for (Field field : klazz.getDeclaredFields()) {
 			classFieldList.add(getClassField(field));
 		}
-		System.out.println("Java");
-		return classFieldList;
 	}
 
 	private ClassField getClassField(Field field) {

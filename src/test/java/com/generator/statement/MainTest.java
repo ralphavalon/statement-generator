@@ -10,8 +10,16 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-public class MainTest extends Results {
+import com.generator.statement.util.PropertyReader;
+
+@PrepareForTest(PropertyReader.class)
+@RunWith(PowerMockRunner.class)
+public class MainTest extends AbstractTest {
 	
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
@@ -21,7 +29,7 @@ public class MainTest extends Results {
 	    System.setOut(new PrintStream(outContent));
 	    System.setErr(new PrintStream(errContent));
 	}
-
+	
 	@After
 	public void cleanUpStreams() {
 	    System.setOut(null);
@@ -29,9 +37,9 @@ public class MainTest extends Results {
 	}
 
 	@Test
-	public void testSuccessMainImprovedNamingStrategyWithJavaFile() {
+	public void testSuccessMainImprovedNamingStrategyWithJavaFileWithoutParameter() {
 		try {
-			Main.main(null);
+			Main.main(new String[]{});
 			assertTrue(outContent.toString().contains(Results.preparedStatementString));
 			assertTrue(outContent.toString().contains(Results.resultSetStringImprovedNamingStrategy));
 			assertTrue(outContent.toString().contains(Results.insertSQLStatementStringImprovedNamingStrategy));
@@ -43,7 +51,36 @@ public class MainTest extends Results {
 	}
 	
 	@Test
-	public void testSuccessMainImprovedNamingStrategyWithClassFile() {
+	public void testSuccessMainImprovedNamingStrategyWithJavaFileWithParameter() {
+		try {
+			Main.main(new String[]{"ExampleModel.java"});
+			assertTrue(outContent.toString().contains(Results.preparedStatementString));
+			assertTrue(outContent.toString().contains(Results.resultSetStringImprovedNamingStrategy));
+			assertTrue(outContent.toString().contains(Results.insertSQLStatementStringImprovedNamingStrategy));
+			assertFalse(outContent.toString().contains(Results.resultSetStringEJB3NamingStrategy));
+			assertFalse(outContent.toString().contains(Results.insertSQLStatementStringEJB3NamingStrategy));
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void testSuccessMainImprovedNamingStrategyWithClassFileWithoutParameter() {
+		try {
+			PowerMockito.doReturn("class").when(PropertyReader.class, "getProperty", "file_type");
+			Main.main(new String[]{});
+			assertTrue(outContent.toString().contains(Results.preparedStatementString));
+			assertTrue(outContent.toString().contains(Results.resultSetStringImprovedNamingStrategy));
+			assertTrue(outContent.toString().contains(Results.insertSQLStatementStringImprovedNamingStrategy));
+			assertFalse(outContent.toString().contains(Results.resultSetStringEJB3NamingStrategy));
+			assertFalse(outContent.toString().contains(Results.insertSQLStatementStringEJB3NamingStrategy));
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void testSuccessMainImprovedNamingStrategyWithClassFileWithParameter() {
 		try {
 			Main.main(new String[]{"ExampleModel.class"});
 			assertTrue(outContent.toString().contains(Results.preparedStatementString));
