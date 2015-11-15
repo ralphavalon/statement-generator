@@ -1,4 +1,4 @@
-package com.generator.statement;
+package com.generator.statement.model;
 
 public class ExampleObject {
 	

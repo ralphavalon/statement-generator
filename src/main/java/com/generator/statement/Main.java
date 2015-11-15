@@ -68,6 +68,7 @@ public class Main {
 	}
 
 	private static void execute(FileEnum fileEnum, File file) throws IOException {
+		System.out.println("File: " + file.getName());
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(getClass(file, fileEnum));
 		generateSqls();
 		generateStatements();

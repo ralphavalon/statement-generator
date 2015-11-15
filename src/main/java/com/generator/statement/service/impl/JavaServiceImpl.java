@@ -59,6 +59,7 @@ public class JavaServiceImpl implements JavaService {
 	@Override
 	public String getPreparedStatement(InterpretedClass interpretedClass) {
 		int i = 0;
+		insertPreparedStatement = "";
 		for (ClassField field : interpretedClass.getClassFieldList()) {
 			if(!isIgnored(field)) {
 				TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType());
@@ -86,6 +87,7 @@ public class JavaServiceImpl implements JavaService {
 
 	@Override
 	public String getResultSetStatement(InterpretedClass interpretedClass, NamingStrategy namingStrategy) {
+		resultSetStatement = "";
 		for (ClassField field : interpretedClass.getClassFieldList()) {
 			if(!isIgnored(field)) {
 				TypeEnum typeEnum = TypeEnum.getTypeEnumByType(field.getType());

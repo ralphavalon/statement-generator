@@ -25,6 +25,7 @@ public class DMLServiceImpl implements DMLService {
 	}
 	
 	public String getInsertSQLStatement(InterpretedClass interpretedClass, NamingStrategy namingStrategy) {
+		insertSQLStatement = "";
 		List<ClassField> fields = interpretedClass.getClassFieldList();
 		insertSQLStatement += "INSERT INTO " + getTableName(namingStrategy, interpretedClass) + "(";
 		for (ClassField field : fields) {
