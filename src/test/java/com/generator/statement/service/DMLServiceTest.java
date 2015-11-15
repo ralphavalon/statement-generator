@@ -16,7 +16,7 @@ import com.generator.statement.factory.InterpretedClassFactory;
 import com.generator.statement.model.ExampleModel;
 import com.generator.statement.service.impl.DMLServiceImpl;
 
-public class DMLServiceTest extends Results {
+public class DMLServiceTest {
 
 	private DMLService dmlService = new DMLServiceImpl();
 	private InterpretedClass interpretedClass;
@@ -24,25 +24,25 @@ public class DMLServiceTest extends Results {
 	@Test
 	public void testSuccessGetInsertSQLStatementEJB3NamingStrategyJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		assertEquals(insertSQLStatementStringEJB3NamingStrategy, dmlService.getInsertSQLStatement(interpretedClass, new EJB3NamingStrategy()));
+		assertEquals(Results.insertSQLStatementStringEJB3NamingStrategy, dmlService.getInsertSQLStatement(interpretedClass, new EJB3NamingStrategy()));
 	}
 	
 	@Test
 	public void testSuccessGetInsertSQLStatementImprovedNamingStrategyJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		assertEquals(insertSQLStatementStringImprovedNamingStrategy, dmlService.getInsertSQLStatement(interpretedClass, new ImprovedNamingStrategy()));
+		assertEquals(Results.insertSQLStatementStringImprovedNamingStrategy, dmlService.getInsertSQLStatement(interpretedClass, new ImprovedNamingStrategy()));
 	}
 	
 	@Test
 	public void testSuccessGetInsertSQLStatementEJB3NamingStrategyClass() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(getJavaClass());
-		assertEquals(insertSQLStatementStringEJB3NamingStrategy, dmlService.getInsertSQLStatement(interpretedClass, new EJB3NamingStrategy()));
+		assertEquals(Results.insertSQLStatementStringEJB3NamingStrategy, dmlService.getInsertSQLStatement(interpretedClass, new EJB3NamingStrategy()));
 	}
 	
 	@Test
 	public void testSuccessGetInsertSQLStatementImprovedNamingStrategyClass() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(getJavaClass());
-		assertEquals(insertSQLStatementStringImprovedNamingStrategy, dmlService.getInsertSQLStatement(interpretedClass, new ImprovedNamingStrategy()));
+		assertEquals(Results.insertSQLStatementStringImprovedNamingStrategy, dmlService.getInsertSQLStatement(interpretedClass, new ImprovedNamingStrategy()));
 	}
 	
 	private JavaClass getJavaClass() {

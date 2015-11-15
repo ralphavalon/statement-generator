@@ -16,7 +16,7 @@ import com.generator.statement.factory.InterpretedClassFactory;
 import com.generator.statement.model.ExampleModel;
 import com.generator.statement.service.impl.JavaServiceImpl;
 
-public class JavaServiceTest extends Results {
+public class JavaServiceTest {
 
 	private JavaService javaService = new JavaServiceImpl();
 	private InterpretedClass interpretedClass;
@@ -24,37 +24,37 @@ public class JavaServiceTest extends Results {
 	@Test
 	public void testSuccessGetPreparedStatementJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		assertEquals(preparedStatementString, javaService.getPreparedStatement(interpretedClass));
+		assertEquals(Results.preparedStatementString, javaService.getPreparedStatement(interpretedClass));
 	}
 	
 	@Test
 	public void testSuccessGetPreparedStatementClass() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(getJavaClass());
-		assertEquals(preparedStatementString, javaService.getPreparedStatement(interpretedClass));
+		assertEquals(Results.preparedStatementString, javaService.getPreparedStatement(interpretedClass));
 	}
 
 	@Test
 	public void testSuccessGetResultSetStatementEJB3NamingStrategyJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		assertEquals(resultSetStringEJB3NamingStrategy, javaService.getResultSetStatement(interpretedClass, new EJB3NamingStrategy()));
+		assertEquals(Results.resultSetStringEJB3NamingStrategy, javaService.getResultSetStatement(interpretedClass, new EJB3NamingStrategy()));
 	}
 	
 	@Test
 	public void testSuccessGetResultSetStatementEJB3NamingStrategyClass() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(getJavaClass());
-		assertEquals(resultSetStringEJB3NamingStrategy, javaService.getResultSetStatement(interpretedClass, new EJB3NamingStrategy()));
+		assertEquals(Results.resultSetStringEJB3NamingStrategy, javaService.getResultSetStatement(interpretedClass, new EJB3NamingStrategy()));
 	}
 	
 	@Test
 	public void testSuccessGetResultSetStatementImprovedNamingStrategyJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		assertEquals(resultSetStringImprovedNamingStrategy, javaService.getResultSetStatement(interpretedClass, new ImprovedNamingStrategy()));
+		assertEquals(Results.resultSetStringImprovedNamingStrategy, javaService.getResultSetStatement(interpretedClass, new ImprovedNamingStrategy()));
 	}
 	
 	@Test
 	public void testSuccessGetResultSetStatementImprovedNamingStrategyClass() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		assertEquals(resultSetStringImprovedNamingStrategy, javaService.getResultSetStatement(interpretedClass, new ImprovedNamingStrategy()));
+		assertEquals(Results.resultSetStringImprovedNamingStrategy, javaService.getResultSetStatement(interpretedClass, new ImprovedNamingStrategy()));
 	}
 	
 	private JavaClass getJavaClass() {

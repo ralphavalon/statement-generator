@@ -1,4 +1,4 @@
-package com.generator.statement;
+package com.generator.statement.config;
 
 import java.util.Arrays;
 import java.util.List;

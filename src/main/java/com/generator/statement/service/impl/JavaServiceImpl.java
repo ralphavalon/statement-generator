@@ -5,7 +5,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.cfg.NamingStrategy;
 
-import com.generator.statement.TypeEnum;
+import com.generator.statement.config.TypeEnum;
 import com.generator.statement.model.ClassField;
 import com.generator.statement.service.InterpretedClass;
 import com.generator.statement.service.JavaService;

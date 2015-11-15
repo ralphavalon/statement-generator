@@ -15,6 +15,7 @@ import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 import org.hibernate.cfg.NamingStrategy;
 
+import com.generator.statement.config.FileEnum;
 import com.generator.statement.config.NamingStrategyEnum;
 import com.generator.statement.config.SqlsEnum;
 import com.generator.statement.config.StatementsEnum;
@@ -115,7 +116,7 @@ public class Main {
 			System.out.println("Class: " + classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), ""));
 			klazz = classLoader.loadClass(classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), ""));
 		} catch (ClassNotFoundException e) {
-			System.out.println("Probably the class didn't compile. Try to use \"javac -cp StatementGenerator-1.0.jar yourClass.java\"");
+			System.out.println("Probably the class didn't compile. Try to use \"javac -cp statement-generator-{version}.jar yourClass.java\"");
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
