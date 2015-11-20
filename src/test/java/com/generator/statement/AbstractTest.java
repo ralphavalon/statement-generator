@@ -1,5 +1,10 @@
 package com.generator.statement;
 
+import java.io.IOException;
+
+import org.apache.bcel.classfile.ClassFormatException;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -22,6 +27,18 @@ public abstract class AbstractTest {
 		PowerMockito.doReturn("PSTM, RESULTSET").when(PropertyReader.class, "getProperty", "statements");
 		PowerMockito.doReturn("improved").when(PropertyReader.class, "getProperty", "naming_strategy");
 		PowerMockito.doReturn("java").when(PropertyReader.class, "getProperty", "file_type");
+	}
+	
+	protected JavaClass getJavaClass() {
+		ClassParser parser = new ClassParser("ExampleModel.class");
+		try {
+			return parser.parse();
+		} catch (ClassFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
