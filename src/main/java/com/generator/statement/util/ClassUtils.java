@@ -1,4 +1,4 @@
-package com.generator.statement.config;
+package com.generator.statement.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,14 +12,16 @@ import org.apache.bcel.classfile.ClassFormatException;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
 
-public class ClassConfig {
+import com.generator.statement.enums.FileEnum;
+
+public class ClassUtils {
 	
 	private static final String PACKAGE_REGEX = "package\\s+([a-zA_Z_][\\.\\w]*);";
 	
 	public static Object getClass(File file, FileEnum fileEnum) throws ClassFormatException, IOException {
 		switch (fileEnum) {
 		case JAVA:
-			return ClassConfig.loadClass(file, getClassPackage(file));
+			return loadClass(file, getClassPackage(file));
 		case CLASS:
 			ClassParser parser = new ClassParser(file.getName());
 			JavaClass javaClass = parser.parse();

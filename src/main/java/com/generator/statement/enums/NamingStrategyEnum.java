@@ -1,4 +1,4 @@
-package com.generator.statement.config;
+package com.generator.statement.enums;
 
 import org.hibernate.cfg.EJB3NamingStrategy;
 import org.hibernate.cfg.ImprovedNamingStrategy;

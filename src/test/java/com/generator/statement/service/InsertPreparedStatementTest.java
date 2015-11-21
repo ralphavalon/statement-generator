@@ -9,7 +9,7 @@ import com.generator.statement.Results;
 import com.generator.statement.factory.InterpretedClassFactory;
 import com.generator.statement.model.ExampleModel;
 import com.generator.statement.statement.AbstractStatement;
-import com.generator.statement.statement.impl.InsertPreparedStatementImpl;
+import com.generator.statement.statement.java.InsertPreparedStatement;
 
 public class InsertPreparedStatementTest extends AbstractTest {
 
@@ -19,14 +19,14 @@ public class InsertPreparedStatementTest extends AbstractTest {
 	@Test
 	public void testSuccessgetInsertPreparedStatementJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		insertPreparedStatement = new InsertPreparedStatementImpl(interpretedClass, null);
+		insertPreparedStatement = new InsertPreparedStatement(interpretedClass, null);
 		assertEquals(Results.preparedStatementString, insertPreparedStatement.getStatement());
 	}
 	
 	@Test
 	public void testSuccessgetInsertPreparedStatementClass() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(getJavaClass());
-		insertPreparedStatement = new InsertPreparedStatementImpl(interpretedClass, null);
+		insertPreparedStatement = new InsertPreparedStatement(interpretedClass, null);
 		assertEquals(Results.preparedStatementString, insertPreparedStatement.getStatement());
 	}
 	

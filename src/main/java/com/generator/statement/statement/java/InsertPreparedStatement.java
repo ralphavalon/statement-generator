@@ -1,22 +1,21 @@
-package com.generator.statement.statement.impl;
+package com.generator.statement.statement.java;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.cfg.NamingStrategy;
 
-import com.generator.statement.config.TypeEnum;
+import com.generator.statement.config.Config;
+import com.generator.statement.enums.TypeEnum;
 import com.generator.statement.model.ClassField;
 import com.generator.statement.service.InterpretedClass;
 import com.generator.statement.statement.AbstractStatement;
-import com.generator.statement.util.PropertyReader;
 
-public class InsertPreparedStatementImpl extends AbstractStatement {
+public class InsertPreparedStatement extends AbstractStatement {
 	
-	public InsertPreparedStatementImpl(InterpretedClass interpretedClass, NamingStrategy namingStrategy) {
+	public InsertPreparedStatement(InterpretedClass interpretedClass, NamingStrategy namingStrategy) {
 		super(interpretedClass, namingStrategy);
 	}
 
 	private String insertPreparedStatement = "";
-	private static final String PREPARED_STATEMENT_VARIABLE = PropertyReader.getProperty("prepared_statement");
 	
 	@Override
 	public String getStatement() {
@@ -45,7 +44,7 @@ public class InsertPreparedStatementImpl extends AbstractStatement {
 
 	private void appendInsertPreparedStatement(String string, int index, TypeEnum typeEnum) {
 		insertPreparedStatement += String.format(string, 
-				PREPARED_STATEMENT_VARIABLE,
+				Config.PREPARED_STATEMENT_VARIABLE,
 				typeEnum.getValue(),
 				index);
 	}

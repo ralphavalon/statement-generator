@@ -1,4 +1,4 @@
-package com.generator.statement.config;
+package com.generator.statement.enums;
 
 import java.util.Arrays;
 import java.util.List;

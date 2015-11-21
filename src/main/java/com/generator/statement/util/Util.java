@@ -7,13 +7,14 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.generator.statement.config.SqlsEnum;
-import com.generator.statement.config.StatementsEnum;
+import com.generator.statement.config.Config;
+import com.generator.statement.enums.JavaStatementEnum;
+import com.generator.statement.enums.SqlStatementEnum;
 
 public class Util {
 	
-	private static Set<StatementsEnum> statementsSet = new HashSet<StatementsEnum>();
-	private static Set<SqlsEnum> sqlsSet = new HashSet<SqlsEnum>();
+	private static Set<JavaStatementEnum> statementsSet = new HashSet<JavaStatementEnum>();
+	private static Set<SqlStatementEnum> sqlsSet = new HashSet<SqlStatementEnum>();
 	
 	public static String removeLastComma(String string) {
 		if (StringUtils.isNotBlank(string)) {
@@ -23,11 +24,11 @@ public class Util {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Set<StatementsEnum> getStatements() {
-		for(String statementString : removeUselessData(PropertyReader.getProperty("statements"))) {
-			statementsSet.add(StatementsEnum.getByName(statementString));
+	public static Set<JavaStatementEnum> getStatements() {
+		for(String statementString : removeUselessData(Config.STATEMENTS)) {
+			statementsSet.add(JavaStatementEnum.getByName(statementString));
 		}
-		return (Set<StatementsEnum>) removeNull(statementsSet);
+		return (Set<JavaStatementEnum>) removeNull(statementsSet);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -37,11 +38,11 @@ public class Util {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Set<SqlsEnum> getSqls() {
-		for(String sqlsString : removeUselessData(PropertyReader.getProperty("sqls"))) {
-			sqlsSet.add(SqlsEnum.getByName(sqlsString));
+	public static Set<SqlStatementEnum> getSqls() {
+		for(String sqlsString : removeUselessData(Config.SQLS)) {
+			sqlsSet.add(SqlStatementEnum.getByName(sqlsString));
 		}
-		return (Set<SqlsEnum>) removeNull(sqlsSet);
+		return (Set<SqlStatementEnum>) removeNull(sqlsSet);
 	}
 	
 	public static Set<?> removeNull(Set<?> set) {

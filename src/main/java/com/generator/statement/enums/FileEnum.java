@@ -1,4 +1,4 @@
-package com.generator.statement.config;
+package com.generator.statement.enums;
 
 
 public enum FileEnum {

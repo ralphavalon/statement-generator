@@ -1,21 +1,20 @@
-package com.generator.statement.statement.impl;
+package com.generator.statement.statement.java;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.cfg.NamingStrategy;
 
-import com.generator.statement.config.TypeEnum;
+import com.generator.statement.config.Config;
+import com.generator.statement.enums.TypeEnum;
 import com.generator.statement.model.ClassField;
 import com.generator.statement.service.InterpretedClass;
 import com.generator.statement.statement.AbstractStatement;
-import com.generator.statement.util.PropertyReader;
 
-public class ResultSetStatementImpl extends AbstractStatement {
+public class ResultSetStatement extends AbstractStatement {
 	
 	private String resultSetStatement = "";
 	private static final String COLUMN = "Column";
-	private static final String RESULT_SET_VARIABLE = PropertyReader.getProperty("result_set");
 	
-	public ResultSetStatementImpl(InterpretedClass interpretedClass, NamingStrategy namingStrategy) {
+	public ResultSetStatement(InterpretedClass interpretedClass, NamingStrategy namingStrategy) {
 		super(interpretedClass, namingStrategy);
 	}
 	
@@ -37,7 +36,7 @@ public class ResultSetStatementImpl extends AbstractStatement {
 		resultSetStatement += String.format(string, 
 				StringUtils.uncapitalize(interpretedClass.getName()),
 				StringUtils.capitalize(field.getName()),
-				RESULT_SET_VARIABLE);
+				Config.RESULT_SET_VARIABLE);
 	}
 	
 	private <T> void appendResultSetStatement(String string, TypeEnum typeEnum, String columnName) {

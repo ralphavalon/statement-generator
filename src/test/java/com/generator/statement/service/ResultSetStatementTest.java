@@ -11,7 +11,7 @@ import com.generator.statement.Results;
 import com.generator.statement.factory.InterpretedClassFactory;
 import com.generator.statement.model.ExampleModel;
 import com.generator.statement.statement.AbstractStatement;
-import com.generator.statement.statement.impl.ResultSetStatementImpl;
+import com.generator.statement.statement.java.ResultSetStatement;
 
 public class ResultSetStatementTest extends AbstractTest {
 
@@ -21,28 +21,28 @@ public class ResultSetStatementTest extends AbstractTest {
 	@Test
 	public void testSuccessGetResultSetStatementEJB3NamingStrategyJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		resultSetStatement = new ResultSetStatementImpl(interpretedClass, new EJB3NamingStrategy());
+		resultSetStatement = new ResultSetStatement(interpretedClass, new EJB3NamingStrategy());
 		assertEquals(Results.resultSetStringEJB3NamingStrategy, resultSetStatement.getStatement());
 	}
 	
 	@Test
 	public void testSuccessGetResultSetStatementEJB3NamingStrategyClass() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(getJavaClass());
-		resultSetStatement = new ResultSetStatementImpl(interpretedClass, new EJB3NamingStrategy());
+		resultSetStatement = new ResultSetStatement(interpretedClass, new EJB3NamingStrategy());
 		assertEquals(Results.resultSetStringEJB3NamingStrategy, resultSetStatement.getStatement());
 	}
 	
 	@Test
 	public void testSuccessGetResultSetStatementImprovedNamingStrategyJava() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		resultSetStatement = new ResultSetStatementImpl(interpretedClass, new ImprovedNamingStrategy());
+		resultSetStatement = new ResultSetStatement(interpretedClass, new ImprovedNamingStrategy());
 		assertEquals(Results.resultSetStringImprovedNamingStrategy, resultSetStatement.getStatement());
 	}
 	
 	@Test
 	public void testSuccessGetResultSetStatementImprovedNamingStrategyClass() {
 		interpretedClass = InterpretedClassFactory.getInterpretedClass(ExampleModel.class);
-		resultSetStatement = new ResultSetStatementImpl(interpretedClass, new ImprovedNamingStrategy());
+		resultSetStatement = new ResultSetStatement(interpretedClass, new ImprovedNamingStrategy());
 		assertEquals(Results.resultSetStringImprovedNamingStrategy, resultSetStatement.getStatement());
 	}
 

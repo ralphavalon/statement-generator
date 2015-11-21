@@ -2,104 +2,68 @@ package com.generator.statement;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.hibernate.cfg.NamingStrategy;
-
-import com.generator.statement.config.ClassConfig;
-import com.generator.statement.config.FileEnum;
-import com.generator.statement.config.NamingStrategyEnum;
-import com.generator.statement.config.SqlsEnum;
+import com.generator.statement.config.Config;
+import com.generator.statement.enums.FileEnum;
+import com.generator.statement.enums.StatementTypeEnum;
 import com.generator.statement.factory.InterpretedClassFactory;
 import com.generator.statement.factory.StatementListFactory;
-import com.generator.statement.service.DMLService;
 import com.generator.statement.service.InterpretedClass;
-import com.generator.statement.service.impl.DMLServiceImpl;
 import com.generator.statement.statement.AbstractStatement;
-import com.generator.statement.util.PropertyReader;
-import com.generator.statement.util.Util;
+import com.generator.statement.util.ClassUtils;
+import com.generator.statement.util.FileUtils;
+import com.generator.statement.util.JavaUtils;
 
 public class Main {
 
-	private static DMLService dmlService;
-	private static NamingStrategy namingStrategy;
 	private static InterpretedClass interpretedClass;
-	private static Set<File> fileSet;
-
-	static {
-		namingStrategy = NamingStrategyEnum.getNamingStrategyByString(PropertyReader.getProperty("naming_strategy"));
-		dmlService = new DMLServiceImpl();
-	}
 	
 	public static void main(String[] args) throws Exception {
-		if(args.length > 0) {
-			for (File file : getFileSet(args)) {
-				FileEnum fileEnum = FileEnum.getFileEnumByFilename(file.getName());
-				execute(fileEnum, file);
-			}
+		if(hasArgs(args)) {
+			generateStatementsForSpecificFiles(args);
 		} else {
-			FileEnum fileEnum = FileEnum.getFileEnumByType(PropertyReader.getProperty("file_type"));
-			if(fileEnum != null) {
-				compileIfNeeded(fileEnum);
-				fileSet = getFilesForCurrentFolder(fileEnum);
-				for (File file : fileSet) {
-					execute(fileEnum, file);
-				}
-			}
+			generateStatementsForAllFilesIfFileTypeIsRight();
 		}
-	}
-
-	private static void compileIfNeeded(FileEnum fileEnum) throws IOException {
-		if(fileEnum.equals(FileEnum.JAVA)) {
-			Runtime.getRuntime().exec("javac -cp \"./*\" *.java");
-		}
-	}
-
-	private static void execute(FileEnum fileEnum, File file) throws IOException {
-		System.out.println("File: " + file.getName());
-		interpretedClass = InterpretedClassFactory.getInterpretedClass(ClassConfig.getClass(file, fileEnum));
-		generateSqls();
-		generateStatements();
-	}
-
-	private static Set<File> getFileSet(String[] args) {
-		Set<File> fileSet = new HashSet<File>();
-		for (String filename : args) {
-			if(FileEnum.getFileEnumByFilename(filename) != null) {
-				fileSet.add(new File(filename));
-			}
-		}
-		return fileSet;
 	}
 	
-	private static Set<File> getFilesForCurrentFolder(FileEnum fileEnum) {
-		Set<File> fileSet = new HashSet<File>();
-		for (File file : new File(".").listFiles()) {
-			if (file.getName().endsWith(fileEnum.getSuffix())) {
-				fileSet.add(file);
-			}
-		}
-		return fileSet;
+	private static boolean hasArgs(String[] args) {
+		return args.length > 0;
 	}
-
-	private static void generateSqls() {
-		for (SqlsEnum sqlsEnum : Util.getSqls()) {
-			switch (sqlsEnum) {
-			case INSERT:
-				print(dmlService.getInsertSQLStatement(interpretedClass, namingStrategy));
-				break;
-			default:
-				break;
-			}
+	
+	private static void generateStatementsForSpecificFiles(String[] args) throws IOException {
+		for (File file : FileUtils.getFileSet(args)) {
+			FileEnum fileEnum = FileEnum.getFileEnumByFilename(file.getName());
+			generateStatementsForFile(fileEnum, file);
 		}
 	}
+	
+	private static void generateStatementsForFile(FileEnum fileEnum, File file) throws IOException {
+		System.out.println("File: " + file.getName());
+		interpretedClass = InterpretedClassFactory.getInterpretedClass(ClassUtils.getClass(file, fileEnum));
+		generateStatements(StatementTypeEnum.SQL);
+		generateStatements(StatementTypeEnum.JAVA);
+	}
 
-	private static void generateStatements() {
-		List<AbstractStatement> statementList = StatementListFactory.factory(interpretedClass);
+
+	private static void generateStatements(StatementTypeEnum statementType) {
+		List<AbstractStatement> statementList = StatementListFactory.factory(interpretedClass, statementType);
 		for (AbstractStatement statement : statementList) {
 			print(statement.getStatement());
+		}
+	}
+
+	private static void generateStatementsForAllFilesIfFileTypeIsRight() throws IOException {
+		FileEnum fileEnum = FileEnum.getFileEnumByType(Config.FILE_TYPE);
+		if(fileEnum != null) {
+			JavaUtils.compileIfNeeded(fileEnum);
+			generateStatementsForAllFiles(fileEnum);
+		}
+	}
+
+	private static void generateStatementsForAllFiles(FileEnum fileEnum) throws IOException {
+		for (File file : FileUtils.getFilesForCurrentFolder(fileEnum)) {
+			generateStatementsForFile(fileEnum, file);
 		}
 	}
 
