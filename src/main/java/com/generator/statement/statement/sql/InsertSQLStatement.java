@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.cfg.NamingStrategy;
 
 import com.generator.statement.model.ClassField;
-import com.generator.statement.service.InterpretedClass;
+import com.generator.statement.model.InterpretedClass;
 import com.generator.statement.statement.AbstractSQLStatement;
 import com.generator.statement.util.Util;
 

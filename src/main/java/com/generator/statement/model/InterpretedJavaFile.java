@@ -1,4 +1,4 @@
-package com.generator.statement.service.impl;
+package com.generator.statement.model;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.generator.statement.model.ClassField;
-import com.generator.statement.service.InterpretedClass;
 
 public class InterpretedJavaFile implements InterpretedClass {
 	

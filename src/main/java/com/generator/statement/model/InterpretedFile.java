@@ -1,6 +1,5 @@
-package com.generator.statement.service.impl;
+package com.generator.statement.model;
 
-import com.generator.statement.model.ClassField;
 
 public abstract class InterpretedFile {
 	

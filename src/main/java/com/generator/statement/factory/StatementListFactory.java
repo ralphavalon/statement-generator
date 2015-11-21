@@ -10,7 +10,7 @@ import com.generator.statement.enums.JavaStatementEnum;
 import com.generator.statement.enums.NamingStrategyEnum;
 import com.generator.statement.enums.SqlStatementEnum;
 import com.generator.statement.enums.StatementTypeEnum;
-import com.generator.statement.service.InterpretedClass;
+import com.generator.statement.model.InterpretedClass;
 import com.generator.statement.statement.AbstractStatement;
 import com.generator.statement.statement.java.InsertPreparedStatement;
 import com.generator.statement.statement.java.ResultSetStatement;

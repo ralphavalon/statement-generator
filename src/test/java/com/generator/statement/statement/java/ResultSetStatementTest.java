@@ -1,4 +1,4 @@
-package com.generator.statement.service;
+package com.generator.statement.statement.java;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,6 +10,7 @@ import com.generator.statement.AbstractTest;
 import com.generator.statement.Results;
 import com.generator.statement.factory.InterpretedClassFactory;
 import com.generator.statement.model.ExampleModel;
+import com.generator.statement.model.InterpretedClass;
 import com.generator.statement.statement.AbstractStatement;
 import com.generator.statement.statement.java.ResultSetStatement;
 

@@ -1,4 +1,4 @@
-package com.generator.statement.service.impl;
+package com.generator.statement.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +9,6 @@ import org.apache.bcel.classfile.AnnotationEntry;
 import org.apache.bcel.classfile.ElementValuePair;
 import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.JavaClass;
-
-import com.generator.statement.model.ClassField;
-import com.generator.statement.service.InterpretedClass;
 
 public class InterpretedClassFile implements InterpretedClass {
 	

@@ -1,8 +1,6 @@
-package com.generator.statement.service;
+package com.generator.statement.model;
 
 import java.util.List;
-
-import com.generator.statement.model.ClassField;
 
 public interface InterpretedClass {
 	

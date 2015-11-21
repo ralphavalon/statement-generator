@@ -2,9 +2,9 @@ package com.generator.statement.factory;
 
 import org.apache.bcel.classfile.JavaClass;
 
-import com.generator.statement.service.InterpretedClass;
-import com.generator.statement.service.impl.InterpretedClassFile;
-import com.generator.statement.service.impl.InterpretedJavaFile;
+import com.generator.statement.model.InterpretedClass;
+import com.generator.statement.model.InterpretedClassFile;
+import com.generator.statement.model.InterpretedJavaFile;
 
 public class InterpretedClassFactory {
 	

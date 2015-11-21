@@ -9,7 +9,7 @@ import com.generator.statement.enums.FileEnum;
 import com.generator.statement.enums.StatementTypeEnum;
 import com.generator.statement.factory.InterpretedClassFactory;
 import com.generator.statement.factory.StatementListFactory;
-import com.generator.statement.service.InterpretedClass;
+import com.generator.statement.model.InterpretedClass;
 import com.generator.statement.statement.AbstractStatement;
 import com.generator.statement.util.ClassUtils;
 import com.generator.statement.util.FileUtils;

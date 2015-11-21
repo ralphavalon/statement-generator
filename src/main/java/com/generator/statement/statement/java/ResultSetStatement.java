@@ -6,7 +6,7 @@ import org.hibernate.cfg.NamingStrategy;
 import com.generator.statement.config.Config;
 import com.generator.statement.enums.TypeEnum;
 import com.generator.statement.model.ClassField;
-import com.generator.statement.service.InterpretedClass;
+import com.generator.statement.model.InterpretedClass;
 import com.generator.statement.statement.AbstractStatement;
 
 public class ResultSetStatement extends AbstractStatement {
