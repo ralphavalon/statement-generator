@@ -11,5 +11,6 @@ public class Config {
 	public static final String NAMING_STRATEGY = PropertyReader.getProperty("naming_strategy");
 	public static final String STATEMENTS = PropertyReader.getProperty("statements");
 	public static final String SQLS = PropertyReader.getProperty("sqls");
+	public static final String OUTPUT = PropertyReader.getProperty("output");
 
 }

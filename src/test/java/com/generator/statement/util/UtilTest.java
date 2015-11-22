@@ -6,10 +6,11 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import com.generator.statement.AbstractTest;
 import com.generator.statement.enums.JavaStatementEnum;
 import com.generator.statement.enums.SqlStatementEnum;
 
-public class UtilTest {
+public class UtilTest extends AbstractTest {
 	
 	private String stringWithLastComma = "?,?,?,?,?,?,?,?,";
 	private String stringWithoutLastComma = "?,?,?,?,?,?,?,?";

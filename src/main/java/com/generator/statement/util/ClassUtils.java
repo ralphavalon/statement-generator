@@ -56,7 +56,7 @@ public class ClassUtils {
 		try {
 			ClassLoader classLoader = new URLClassLoader(new URL[]{ file.toURI().toURL() });
 			String fullClassPath = classPackage + file.getName().replace(FileEnum.JAVA.getSuffix(), "");
-			System.out.println("Class: " + fullClassPath);
+			System.out.println("Compiling Class: " + fullClassPath);
 			klazz = classLoader.loadClass(fullClassPath);
 		} catch (ClassNotFoundException e) {
 			System.out.println("Probably the class didn't compile. Try to use \"javac -cp statement-generator-{version}.jar yourClass.java\"");

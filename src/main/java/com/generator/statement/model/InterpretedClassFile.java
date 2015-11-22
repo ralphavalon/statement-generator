@@ -17,10 +17,11 @@ public class InterpretedClassFile implements InterpretedClass {
 	private static final String PACKAGE_DOT_SEPARATOR = ".";
 	private static final String PACKAGE_SLASH_SEPARATOR = "/";
 	private List<ClassField> classFieldList;
+	private final boolean removeSemicolon = true;
 	
 	public InterpretedClassFile(JavaClass javaClass) {
 		this.javaClass = javaClass;
-		this.name = removePackageDefinition(javaClass.getClassName(), PACKAGE_DOT_SEPARATOR, false);
+		this.name = removePackageDefinition(javaClass.getClassName(), PACKAGE_DOT_SEPARATOR, !removeSemicolon);
 		initClassFieldList();
 	}
 	
@@ -53,7 +54,7 @@ public class InterpretedClassFile implements InterpretedClass {
 	private String getType(Field field) {
 		String fieldType = field.getType().toString();
 		if(fieldType.contains(PACKAGE_DOT_SEPARATOR)) {
-			return removePackageDefinition(fieldType, PACKAGE_DOT_SEPARATOR, false);
+			return removePackageDefinition(fieldType, PACKAGE_DOT_SEPARATOR, !removeSemicolon);
 		}
 		return fieldType;
 	}
@@ -69,7 +70,7 @@ public class InterpretedClassFile implements InterpretedClass {
 	public String getClassAnnotationAttribute(String annotation, String attribute) {
 		for (AnnotationEntry annotationEntry : javaClass.getAnnotationEntries()) {
 			String annotationType = annotationEntry.getAnnotationType();
-			if(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, true).equals(annotation)) {
+			if(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, removeSemicolon).equals(annotation)) {
 				return getAttribute(annotationEntry, attribute); 
 			}
 		}
@@ -88,7 +89,7 @@ public class InterpretedClassFile implements InterpretedClass {
 	public boolean hasClassAnnotation(String annotation) {
 		for (AnnotationEntry annotationEntry : javaClass.getAnnotationEntries()) {
 			String annotationType = annotationEntry.getAnnotationType();
-			if(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, true).equals(annotation)) {
+			if(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, removeSemicolon).equals(annotation)) {
 				return true;
 			}
 		}
@@ -101,7 +102,7 @@ public class InterpretedClassFile implements InterpretedClass {
 		Map<String, Map<String, String>> annotationMap = new HashMap<String, Map<String, String>>();
 		for (AnnotationEntry annotationEntry : annotationEntries) {
 			String annotationType = annotationEntry.getAnnotationType();
-			annotationMap.put(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, true), getAnnotationAttributesMap(annotationEntry));
+			annotationMap.put(removePackageDefinition(annotationType, PACKAGE_SLASH_SEPARATOR, removeSemicolon), getAnnotationAttributesMap(annotationEntry));
 		}
 		return annotationMap;
 	}
