@@ -3,7 +3,7 @@ JDBC Helper. It generates all statements from Java classes and its variables.
 
 ### Example - Converting from .java ###
 ```
-java -jar statement-generator-{version}.jar yourClass.class
+java -jar statement-generator-{version}.jar yourClass.java
 ```
 
 ### Example - Converting from .class ###
