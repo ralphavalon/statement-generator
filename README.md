@@ -52,7 +52,7 @@ It changes the default extension to search (changes the parser). **Default:** cl
 * java - Uses .java parser
 * class - Uses .class parser
 
-#### output #### 
+#### output ####
 The output of the result. **Default:** file
 
 * console - Prints the output to the console. 
