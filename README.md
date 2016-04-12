@@ -1,6 +1,9 @@
 # statement-generator #
 JDBC Helper. It generates all statements from Java classes and its variables.
 
+## Download ##
+[Choose the release](release/)
+
 ### Example - Converting from .java ###
 ```
 java -jar statement-generator-{version}.jar yourClass.java
