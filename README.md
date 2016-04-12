@@ -11,6 +11,33 @@ java -jar statement-generator-{version}.jar yourClass.java
 java -jar statement-generator-{version}.jar yourClass.class
 ```
 
+### Example - Using with output=file ###
+```
+java -jar statement-generator-{version}.jar ExampleModel.class
+```
+
+It will generate a directory: ExampleModel. Inside the directory, you will have files like:
+
+#### InsertPreparedStatement.txt ####
+```
+pstm.setInt(1, exampleModel.getIntValue());
+pstm.setString(2, exampleModel.getStringValue());
+...
+```
+
+#### InsertSQLStatement.txt ####
+```
+INSERT INTO exampleModelTable(int_value,string_value) VALUES (?,?);
+``` 
+
+#### ResultSetStatement.txt ####
+```
+exampleModel.setIntValue(resultSet.getInt("int_value"));
+exampleModel.setStringValue(resultSet.getString("string_value"));
+...
+```  
+
+
 ### Configuring ###
 Just put a *config.properties* in the same path of the jar file. These are the available key properties and its values:
 
