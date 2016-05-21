@@ -44,5 +44,7 @@ public class Results {
 	
 	public static String selectSQLStatementStringImprovedNamingStrategy = "SELECT int_value,string_value,date_value,bool,long_value,float_value,double_value,example_object FROM exampleModelTable;\n";
 
-
+	public static String deleteSQLStatementStringEJB3NamingStrategy = "DELETE FROM exampleModelTable;\n";
+	
+	public static String deleteSQLStatementStringImprovedNamingStrategy = "DELETE FROM exampleModelTable;\n";
 }

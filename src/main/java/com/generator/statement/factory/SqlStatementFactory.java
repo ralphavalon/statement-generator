@@ -7,6 +7,7 @@ import com.generator.statement.enums.NamingStrategyEnum;
 import com.generator.statement.enums.SqlStatementEnum;
 import com.generator.statement.model.InterpretedClass;
 import com.generator.statement.statement.AbstractSQLStatement;
+import com.generator.statement.statement.sql.DeleteSQLStatement;
 import com.generator.statement.statement.sql.InsertSQLStatement;
 import com.generator.statement.statement.sql.SelectSQLStatement;
 import com.generator.statement.statement.sql.UpdateSQLStatement;
@@ -15,7 +16,8 @@ public enum SqlStatementFactory {
 	
 	INSERT_STATEMENT(SqlStatementEnum.INSERT, InsertSQLStatement.class),
 	UPDATE_STATEMENT(SqlStatementEnum.UPDATE, UpdateSQLStatement.class),
-	SELECT_STATEMENT(SqlStatementEnum.SELECT, SelectSQLStatement.class);
+	SELECT_STATEMENT(SqlStatementEnum.SELECT, SelectSQLStatement.class),
+	DELETE_STATEMENT(SqlStatementEnum.DELETE, DeleteSQLStatement.class);
 	
 	private SqlStatementEnum sqlStatementEnum;
 	private Class<? extends AbstractSQLStatement> sqlStatement;

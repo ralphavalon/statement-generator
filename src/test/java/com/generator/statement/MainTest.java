@@ -97,6 +97,7 @@ public class MainTest extends AbstractTest {
 		assertTrue(outContent.toString().contains(Results.insertSQLStatementStringImprovedNamingStrategy));
 		assertTrue(outContent.toString().contains(Results.updateSQLStatementStringImprovedNamingStrategy));
 		assertTrue(outContent.toString().contains(Results.selectSQLStatementStringImprovedNamingStrategy));
+		assertTrue(outContent.toString().contains(Results.deleteSQLStatementStringImprovedNamingStrategy));
 	}
 
 }

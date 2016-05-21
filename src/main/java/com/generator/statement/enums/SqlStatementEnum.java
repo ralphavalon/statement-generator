@@ -4,7 +4,8 @@ public enum SqlStatementEnum {
 	
 	INSERT("INSERT"),
 	UPDATE("UPDATE"),
-	SELECT("SELECT");
+	SELECT("SELECT"),
+	DELETE("DELETE");
 	
 	private String name;
 	

@@ -25,7 +25,7 @@ public abstract class AbstractTest {
 		doReturn("pstm").when(PropertyReader.class, "getProperty", "prepared_statement");
 		doReturn("resultSet").when(PropertyReader.class, "getProperty", "result_set");
 		doReturn("stringToIgnore, dateToIgnore").when(PropertyReader.class, "getProperty", "ignore_fields");
-		doReturn("INSERT,UPDATE, SELECT").when(PropertyReader.class, "getProperty", "sqls");
+		doReturn("INSERT,UPDATE, SELECT,DELETE").when(PropertyReader.class, "getProperty", "sqls");
 		doReturn("PSTM, RESULTSET").when(PropertyReader.class, "getProperty", "statements");
 		doReturn("improved").when(PropertyReader.class, "getProperty", "naming_strategy");
 		doReturn("java").when(PropertyReader.class, "getProperty", "file_type");
