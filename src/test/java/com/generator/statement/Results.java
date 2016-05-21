@@ -36,4 +36,8 @@ public class Results {
 	
 	public static String insertSQLStatementStringImprovedNamingStrategy = "INSERT INTO exampleModelTable(int_value,string_value,date_value,bool,long_value,float_value,double_value,example_object) VALUES (?,?,?,?,?,?,?,?);\n";
 
+	public static String updateSQLStatementStringEJB3NamingStrategy = "UPDATE exampleModelTable SET intValue = ?,stringValue = ?,dateValue = ?,bool = ?,longValue = ?,floatValue = ?,doubleValue = ?,exampleObject = ?;\n";
+	
+	public static String updateSQLStatementStringImprovedNamingStrategy = "UPDATE exampleModelTable SET int_value = ?,string_value = ?,date_value = ?,bool = ?,long_value = ?,float_value = ?,double_value = ?,example_object = ?;\n";
+
 }
