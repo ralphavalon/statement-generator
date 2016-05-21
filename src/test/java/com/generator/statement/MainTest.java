@@ -41,12 +41,8 @@ public class MainTest extends AbstractTest {
 		try {
 			Main.main(new String[]{});
 			assertTrue(outContent.toString().contains(Results.preparedStatementString));
-			assertTrue(outContent.toString().contains(Results.resultSetStringImprovedNamingStrategy));
-			assertTrue(outContent.toString().contains(Results.insertSQLStatementStringImprovedNamingStrategy));
-			assertTrue(outContent.toString().contains(Results.updateSQLStatementStringImprovedNamingStrategy));
-			assertFalse(outContent.toString().contains(Results.resultSetStringEJB3NamingStrategy));
-			assertFalse(outContent.toString().contains(Results.insertSQLStatementStringEJB3NamingStrategy));
-			assertFalse(outContent.toString().contains(Results.updateSQLStatementStringEJB3NamingStrategy));
+			assertTrueImprovedNamingStrategy();
+			assertFalseEJB3NamingStrategy();
 		} catch (Exception e) {
 			fail();
 		}
@@ -57,12 +53,8 @@ public class MainTest extends AbstractTest {
 		try {
 			Main.main(new String[]{"ExampleModel.java"});
 			assertTrue(outContent.toString().contains(Results.preparedStatementString));
-			assertTrue(outContent.toString().contains(Results.resultSetStringImprovedNamingStrategy));
-			assertTrue(outContent.toString().contains(Results.insertSQLStatementStringImprovedNamingStrategy));
-			assertTrue(outContent.toString().contains(Results.updateSQLStatementStringImprovedNamingStrategy));
-			assertFalse(outContent.toString().contains(Results.resultSetStringEJB3NamingStrategy));
-			assertFalse(outContent.toString().contains(Results.insertSQLStatementStringEJB3NamingStrategy));
-			assertFalse(outContent.toString().contains(Results.updateSQLStatementStringEJB3NamingStrategy));
+			assertTrueImprovedNamingStrategy();
+			assertFalseEJB3NamingStrategy();
 		} catch (Exception e) {
 			fail();
 		}
@@ -74,12 +66,8 @@ public class MainTest extends AbstractTest {
 			PowerMockito.doReturn("class").when(PropertyReader.class, "getProperty", "file_type");
 			Main.main(new String[]{});
 			assertTrue(outContent.toString().contains(Results.preparedStatementString));
-			assertTrue(outContent.toString().contains(Results.resultSetStringImprovedNamingStrategy));
-			assertTrue(outContent.toString().contains(Results.insertSQLStatementStringImprovedNamingStrategy));
-			assertTrue(outContent.toString().contains(Results.updateSQLStatementStringImprovedNamingStrategy));
-			assertFalse(outContent.toString().contains(Results.resultSetStringEJB3NamingStrategy));
-			assertFalse(outContent.toString().contains(Results.insertSQLStatementStringEJB3NamingStrategy));
-			assertFalse(outContent.toString().contains(Results.updateSQLStatementStringEJB3NamingStrategy));
+			assertTrueImprovedNamingStrategy();
+			assertFalseEJB3NamingStrategy();
 		} catch (Exception e) {
 			fail();
 		}
@@ -90,15 +78,25 @@ public class MainTest extends AbstractTest {
 		try {
 			Main.main(new String[]{"ExampleModel.class"});
 			assertTrue(outContent.toString().contains(Results.preparedStatementString));
-			assertTrue(outContent.toString().contains(Results.resultSetStringImprovedNamingStrategy));
-			assertTrue(outContent.toString().contains(Results.insertSQLStatementStringImprovedNamingStrategy));
-			assertTrue(outContent.toString().contains(Results.updateSQLStatementStringImprovedNamingStrategy));
-			assertFalse(outContent.toString().contains(Results.resultSetStringEJB3NamingStrategy));
-			assertFalse(outContent.toString().contains(Results.insertSQLStatementStringEJB3NamingStrategy));
-			assertFalse(outContent.toString().contains(Results.updateSQLStatementStringEJB3NamingStrategy));
+			assertTrueImprovedNamingStrategy();
+			assertFalseEJB3NamingStrategy();
 		} catch (Exception e) {
 			fail();
 		}
+	}
+
+	private void assertFalseEJB3NamingStrategy() {
+		assertFalse(outContent.toString().contains(Results.resultSetStringEJB3NamingStrategy));
+		assertFalse(outContent.toString().contains(Results.insertSQLStatementStringEJB3NamingStrategy));
+		assertFalse(outContent.toString().contains(Results.updateSQLStatementStringEJB3NamingStrategy));
+		assertFalse(outContent.toString().contains(Results.selectSQLStatementStringEJB3NamingStrategy));
+	}
+
+	private void assertTrueImprovedNamingStrategy() {
+		assertTrue(outContent.toString().contains(Results.resultSetStringImprovedNamingStrategy));
+		assertTrue(outContent.toString().contains(Results.insertSQLStatementStringImprovedNamingStrategy));
+		assertTrue(outContent.toString().contains(Results.updateSQLStatementStringImprovedNamingStrategy));
+		assertTrue(outContent.toString().contains(Results.selectSQLStatementStringImprovedNamingStrategy));
 	}
 
 }

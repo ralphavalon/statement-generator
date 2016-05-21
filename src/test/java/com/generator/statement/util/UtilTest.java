@@ -39,9 +39,10 @@ public class UtilTest extends AbstractTest {
 	@Test
 	public void testSuccessGetSqls() {
 		Set<SqlStatementEnum> sqlsSet = Util.getSqls();
-		assertEquals(2, sqlsSet.size());
+		assertEquals(3, sqlsSet.size());
 		assertTrue(sqlsSet.contains(SqlStatementEnum.INSERT));
 		assertTrue(sqlsSet.contains(SqlStatementEnum.UPDATE));
+		assertTrue(sqlsSet.contains(SqlStatementEnum.SELECT));
 	}
 
 }

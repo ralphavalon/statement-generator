@@ -3,7 +3,8 @@ package com.generator.statement.enums;
 public enum SqlStatementEnum {
 	
 	INSERT("INSERT"),
-	UPDATE("UPDATE");
+	UPDATE("UPDATE"),
+	SELECT("SELECT");
 	
 	private String name;
 	
